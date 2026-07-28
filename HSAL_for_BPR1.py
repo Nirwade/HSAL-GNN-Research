@@ -11,7 +11,7 @@ import math
 class HSAL(nn.Module):
     def __init__(self, user_num, item_num, input_dim, item_max_length, user_max_length, feat_drop=0.2, attn_drop=0.2,
                  user_long='orgat', user_short='att', item_long='ogat', item_short='att', user_update='rnn',
-                 item_update='rnn', last_item=True, layer_num=3, time=True):
+                 item_update='rnn', last_item=True, layer_num=3, time=True, data_name='MovieLens_all'):
         super(HSAL, self).__init__()
         self.user_num = user_num
         self.item_num = item_num
@@ -43,7 +43,7 @@ class HSAL(nn.Module):
             self.unified_map = nn.Linear(self.layer_num * self.hidden_size, self.hidden_size, bias=False).to(self.device) 
         self.layers = nn.ModuleList([HSALLayers(self.hidden_size, self.hidden_size, self.user_max_length, self.item_max_length, feat_drop, attn_drop,
                                                 self.user_long, self.user_short, self.item_long, self.item_short,
-                                                self.user_update, self.item_update,self.item_embedding) for _ in range(self.layer_num)])
+                                                self.user_update, self.item_update,self.item_embedding, data_name=data_name) for _ in range(self.layer_num)])
         self.reset_parameters()
 
     def forward(self, g, user_index=None, last_item_index=None, pos_tar=None, neg_tar=None, is_training=False):
@@ -104,12 +104,12 @@ class HSAL(nn.Module):
 
 class HSALLayers(nn.Module):
     def __init__(self, in_feats, out_feats, user_max_length, item_max_length, feat_drop=0.2, attn_drop=0.2, user_long='orgat', user_short='att',
-                 item_long='orgat', item_short='att', user_update='residual', item_update='residual', item_embedding=None, K=4):
+                 item_long='orgat', item_short='att', user_update='residual', item_update='residual', item_embedding=None, K=4, data_name='MovieLens_all'):
         super(HSALLayers, self).__init__()
         
         # --- OPTIMIZATION START ---
         # 1. Load Data
-        csv_file = 'Series_table_sinusodial_Series_table_MovieLens_all.csv' # <--- UPDATE THIS IF NEEDED FOR MOVIELENS_ALL
+        csv_file = f'Series_table_sinusodial_Series_table_{data_name}.csv' # <--- UPDATE THIS IF NEEDED FOR MOVIELENS_ALL
         print(f"Loading Series Table from {csv_file}...")
         self.series_table_sequential_data = pd.read_csv(csv_file)
         

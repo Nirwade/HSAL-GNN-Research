@@ -134,7 +134,7 @@ def main():
     model = HSAL(user_num=user_num, item_num=item_num, input_dim=opt.hidden_size, item_max_length=opt.item_max_length,
                 user_max_length=opt.user_max_length, feat_drop=opt.feat_drop, attn_drop=opt.attn_drop, user_long=opt.user_long, user_short=opt.user_short,
                 item_long=opt.item_long, item_short=opt.item_short, user_update=opt.user_update, item_update=opt.item_update, last_item=opt.last_item,
-                layer_num=opt.layer_num).to(device)
+                layer_num=opt.layer_num, data_name=opt.data).to(device)
     optimizer = optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2)
     
     #########################################################################################

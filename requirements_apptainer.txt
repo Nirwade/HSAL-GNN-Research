@@ -3,7 +3,8 @@ certifi==2026.1.4
 charset-normalizer==3.4.4
 contourpy==1.3.2
 cycler==0.12.1
-dgl==2.1.0
+# DGL requires the CUDA build explicitly - plain "pip install -r" alone pulls CPU-only.
+# Install separately with: pip install --no-cache-dir "dgl==2.1.0" -f https://data.dgl.ai/wheels/cu121/repo.html
 filelock==3.24.0
 fonttools==4.61.1
 fsspec==2026.2.0

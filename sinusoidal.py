@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+import argparse
 
 def generate_positional_embedding(position, embedding_dim=10):
     """
@@ -25,8 +26,13 @@ def generate_positional_embedding(position, embedding_dim=10):
               
     return embedding
 # Convert to DataFrame
-data = 'Goodreads_YoungAdult_HSAL_Final'
+parser = argparse.ArgumentParser()
+parser.add_argument('--data', default='Goodreads_young_adult_HSAL_100k', help='dataset name')
+opt = parser.parse_args()
+data = opt.data
 df = pd.read_csv(f'Data/{data}.csv')
+# Match new_data1.py's ID remapping so item_id aligns with the model's factorized ID space
+df['item_id'] = pd.factorize(df['item_id'])[0]
 #df=df.dropna()
 # Helper function to extract series and position
 def process_series(item_series_id):
@@ -36,10 +42,10 @@ def process_series(item_series_id):
 
     if item_series_id.startswith("SB"):  # Standalone item
         return "Standalone", -1
-    elif "Series" in item_series_id:  # Series item
-        parts = item_series_id.split("_")  # Split series identifier
-        series_id = parts[0]  # e.g., "Series 1"
-        position = int(parts[1][1:])  # Extract position (e.g., P5 -> 5)
+    elif item_series_id.startswith("Series_"):  # Series item, format: Series_<id>_P<position>
+        parts = item_series_id.split("_")
+        series_id = f"{parts[0]}_{parts[1]}"  # e.g. "Series_167817", "Series_MAL53", "Series_SS12431"
+        position = int(parts[2][1:])  # "P3" -> 3
         return series_id, position
     return None, None
 
