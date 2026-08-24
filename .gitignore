@@ -45,3 +45,5 @@ slurm-*.out
 
 __pycache__/
 
+*.pt
+*.bak1

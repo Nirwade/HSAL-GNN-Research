@@ -9,7 +9,7 @@
 #SBATCH --gres=gpu:a100-pcie-40gb:1
 #SBATCH --mem=64G
 #SBATCH --time=48:00:00
-#SBATCH --job-name=Good100k
+#SBATCH --job-name=MAL5ep
 #SBATCH --output=run_job_%x_%j.out
 #SBATCH --error=run_job_%x_%j.err
 #SBATCH --mail-user=snirwade@buffalo.edu
@@ -141,7 +141,7 @@ python -u new_main_BPR.py \
     --hidden_size 50 \
     --gpu 0 \
     --seed ${RUN_ID:-0} \
-    --epoch 50 \
+    --epoch 5 \
     --model_record \
 
 "

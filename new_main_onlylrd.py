@@ -4,7 +4,7 @@ from sys import exit
 import pandas as pd
 import numpy as np
 #from DGSR_o import DGSR, collate, collate_test
-from HSAL_for_BPR1 import HSAL, collate, collate_test, collate_bpr
+from LRD import OnlyLRD, collate, collate_test, collate_bpr
 from dgl import load_graphs
 import pickle
 from utils import myFloder
@@ -25,8 +25,8 @@ import dgl
 warnings.filterwarnings('ignore')
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', default='Goodreads_YoungAdult_HSAL_Final', help='data name: mixed_data')
-    parser.add_argument('--batchSize', type=int, default=64, help='input batch size')
+    parser.add_argument('--data', default='Goodreads_fantasy_paranormal_HSAL_100k', help='data name: mixed_data')
+    parser.add_argument('--batchSize', type=int, default=16, help='input batch size')
     parser.add_argument('--hidden_size', type=int, default=50, help='hidden state size')
     parser.add_argument('--epoch', type=int, default=10, help='number of epochs to train for')
     parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
@@ -49,19 +49,9 @@ def main():
     parser.add_argument("--val", action='store_true', default=False)
     parser.add_argument("--model_record", action='store_true', default=False, help='record model')
     parser.add_argument("--resume", action="store_true", help="resume from checkpoint")
-    parser.add_argument("--seed", type=int, default=0, help="random seed for this run")
-    
+
     opt = parser.parse_args()
     print(opt.data)
-
-    import random
-    random.seed(opt.seed)
-    np.random.seed(opt.seed)
-    torch.manual_seed(opt.seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(opt.seed)
-    print('seed', opt.seed)
-
     args, extras = parser.parse_known_args()
     if torch.cuda.is_available():
         os.environ["CUDA_VISIBLE_DEVICES"] = opt.gpu
@@ -72,50 +62,35 @@ def main():
         else torch.device("cpu")
     )
     print('device',device)
-    
+
 
     if opt.record:
-        log_file = f'results/{opt.data}_seed{opt.seed}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
+        log_file = f'results/{opt.data}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
                 f'US_{opt.user_short}_IS_{opt.item_short}_La_{args.last_item}_UM_{opt.user_max_length}_IM_{opt.item_max_length}_K_{opt.k_hop}' \
                 f'_layer_{opt.layer_num}_l2_{opt.l2}'
         mkdir_if_not_exist(log_file)
         sys.stdout = Logger(log_file)
         print(f'Logging to {log_file}')
     if opt.model_record:
-        model_file = f'{opt.data}_seed{opt.seed}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
+        model_file = f'{opt.data}_OnlyLRD_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
                 f'US_{opt.user_short}_IS_{opt.item_short}_La_{args.last_item}_UM_{opt.user_max_length}_IM_{opt.item_max_length}_K_{opt.k_hop}' \
                 f'_layer_{opt.layer_num}_l2_{opt.l2}'
-        ##################################
         checkpoint_dir = "save_checkpoints"
         os.makedirs(checkpoint_dir, exist_ok=True)
         checkpoint_path = os.path.join(checkpoint_dir, model_file + "_checkpoint.pth")
         results_path = os.path.join(checkpoint_dir, model_file + "_results.txt")
-        ###################################
 
     # loading data
     data = pd.read_csv('./Data/' + opt.data + '.csv')
     user = data['user_id'].unique()
     item = data['item_id'].unique()
-    
-    #####################
-    user_num = len(user)+10000
-    item_num = len(item)+10000
-    #####################
-    
-
+    user_num = len(user)
+    item_num = len(item)
     train_root = f'Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/train/'
 
     test_root = f'Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/test/'
     val_root = f'Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/val/'
-    
-    ################################################### 
-    
     train_set = myFloder(train_root, load_graphs)
-    #train_set_raw = myFloder(train_root, load_graphs)
-    #train_set = [data for data in tqdm(train_set_raw)]
-    
-    ###################################################
-
     test_set = myFloder(test_root, load_graphs)
 
     if opt.val:
@@ -133,7 +108,7 @@ def main():
                             collate_fn=train_collate_fn, # Use the partial function
                             shuffle=True, 
                             pin_memory=True, 
-                            num_workers=16)
+                            num_workers=12)
     
     #########################################################################################
     test_data = DataLoader(dataset=test_set, batch_size=opt.batchSize, collate_fn=lambda x: collate_test(x, data_neg), pin_memory=True, num_workers=0)
@@ -141,45 +116,71 @@ def main():
         print('val')
         val_data = DataLoader(dataset=val_set, batch_size=opt.batchSize, collate_fn=lambda x: collate_test(x, data_neg), pin_memory=True, num_workers=2)
 
-    model = HSAL(user_num=user_num, item_num=item_num, input_dim=opt.hidden_size, item_max_length=opt.item_max_length,
-                user_max_length=opt.user_max_length, feat_drop=opt.feat_drop, attn_drop=opt.attn_drop, user_long=opt.user_long, user_short=opt.user_short,
-                item_long=opt.item_long, item_short=opt.item_short, user_update=opt.user_update, item_update=opt.item_update, last_item=opt.last_item,
-                layer_num=opt.layer_num, data_name=opt.data).to(device)
+    #model = HSAL(user_num=user_num, item_num=item_num, input_dim=opt.hidden_size, item_max_length=opt.item_max_length,
+     #           user_max_length=opt.user_max_length, feat_drop=opt.feat_drop, attn_drop=opt.attn_drop, user_long=opt.user_long, user_short=opt.user_short,
+      #          item_long=opt.item_long, item_short=opt.item_short, user_update=opt.user_update, item_update=opt.item_update, last_item=opt.last_item,
+       #         layer_num=opt.layer_num).to(device)
+    
+    # With the OnlyLRD instantiation:
+    llm_emb_path = f'Data/{opt.data}_llm_embeddings.pt'
+    model = OnlyLRD(
+        user_num=user_num, 
+        item_num=item_num, 
+        input_dim=opt.hidden_size, 
+        llm_emb_path=llm_emb_path,
+        num_latent_relations=8
+    ).to(device)
     optimizer = optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2)
     
     #########################################################################################
-    # BPR Loss: -ln(sigmoid(pos - neg))
-    def bpr_loss(pos_scores, neg_scores):
-        return -torch.mean(torch.nn.functional.logsigmoid(pos_scores - neg_scores))
+    def joint_loss(pos_scores, neg_scores, q_r, last_emb, pos_emb, neg_emb, relation_weights, lambda_reg=1.0, alpha=0.1):
+        # 1. Standard BPR Loss (L_rec)
+        l_rec = -torch.mean(torch.nn.functional.logsigmoid(pos_scores - neg_scores))
+        
+        # 2. LRD Reconstruction Loss (L_lrd) using DistMult
+        # Expand dimensions to compute scores for all 8 relations simultaneously
+        last_exp = last_emb.unsqueeze(1)    # [Batch, 1, Hidden]
+        pos_exp = pos_emb.unsqueeze(1)      # [Batch, 1, Hidden]
+        neg_exp = neg_emb.unsqueeze(1)      # [Batch, 1, Hidden]
+        rel_exp = relation_weights.unsqueeze(0) # [1, Num_Relations, Hidden]
+        
+        # DistMult: phi = last^T * diag(r) * target
+        phi_pos = torch.sum(last_exp * rel_exp * pos_exp, dim=-1) # [Batch, Num_Relations]
+        phi_neg = torch.sum(last_exp * rel_exp * neg_exp, dim=-1) # [Batch, Num_Relations]
+        
+        # Pseudo-likelihood of reconstruction 
+        reconstruction = torch.nn.functional.logsigmoid(phi_pos) + torch.nn.functional.logsigmoid(-phi_neg)
+        
+        # Weight the reconstruction by the predicted relation probabilities q(r)
+        l_lrd = -torch.mean(torch.sum(q_r * reconstruction, dim=-1))
+        
+        # 3. Entropy Regularization H[q(r)] to prevent mode collapse
+        entropy = -torch.mean(torch.sum(q_r * torch.log(q_r + 1e-8), dim=-1))
+        
+        return l_rec + (lambda_reg * l_lrd) - (alpha * entropy)
     
     val_loss_func = nn.CrossEntropyLoss()
 
     #########################################################################################
     #loss_func = nn.CrossEntropyLoss()
-    #loss_func = nn.BCEWithLogitsLoss()
-    
-    ##################################################################
+    #loss_func = nn.BCEWithLogitsLoss() 
     best_result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]   # hit5,hit10,hit20,mrr5,mrr10,mrr20
-    best_epoch = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    best_epoch = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] 
     stop_num = 0
     start_epoch = 0
 
-    if opt.resume and os.path.exists(checkpoint_path):
+    if opt.resume and opt.model_record and os.path.exists(checkpoint_path):
         print("Loading checkpoint...")
         checkpoint = torch.load(checkpoint_path, map_location=device)
-    
+
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_epoch = checkpoint["epoch"] + 1
         best_result = checkpoint["best_result"]
         best_epoch = checkpoint["best_epoch"]
-    
+
         print(f"Resumed from epoch {start_epoch}")
-    ##################################################################
 
-
-
-    #for epoch in range(opt.epoch):
     for epoch in range(start_epoch, opt.epoch):
         stop = True
         epoch_loss = 0
@@ -203,14 +204,15 @@ def main():
             iter += 1
             
             # Pass explicit pos_tar and neg_tar to the model
-            # Ensure your HSAL model forward method accepts these arguments!
-            pos_score, neg_score = model(batch_graph, user, last_item, 
+            # Pass explicit pos_tar and neg_tar to the model
+            pos_score, neg_score, q_r, last_id, pos_id, neg_id, rel_weights = model(
+                                         batch_graph, user, last_item, 
                                          pos_tar=label, 
                                          neg_tar=neg_item, 
                                          is_training=True)
             
-            # Calculate BPR Loss
-            loss = bpr_loss(pos_score, neg_score)
+            # Calculate Joint LRD + BPR Loss
+            loss = joint_loss(pos_score, neg_score, q_r, last_id, pos_id, neg_id, rel_weights, lambda_reg=1.0)
             
             optimizer.zero_grad()
             loss.backward()
@@ -364,17 +366,16 @@ def main():
                 best_epoch[2], best_epoch[3], best_epoch[4], best_epoch[5], best_epoch[6], best_epoch[7], best_epoch[8],
                 best_epoch[9], best_epoch[10], best_epoch[11], best_epoch[12], best_epoch[13], best_epoch[14], best_epoch[15], best_epoch[16], best_epoch[17], best_epoch[18], best_epoch[19], best_epoch[20], best_epoch[21]
                 ))
-            # ===== SAVE RESULTS HERE =====
-            with open(results_path, "a") as f:
-                f.write(
-                f"Epoch {epoch+1}, "
-                f"TrainLoss {epoch_loss:.4f}, "
-                f"TestLoss {np.mean(all_loss):.4f}, "
-                f"Recall@10 {best_result[1]:.4f}, "
-                f"NDCG@10 {best_result[12]:.4f}\n")
 
-            # ==============================
             if opt.model_record:
+                with open(results_path, "a") as f:
+                    f.write(
+                    f"Epoch {epoch+1}, "
+                    f"TrainLoss {epoch_loss:.4f}, "
+                    f"TestLoss {np.mean(all_loss):.4f}, "
+                    f"Recall@10 {best_result[1]:.4f}, "
+                    f"NDCG@10 {best_result[12]:.4f}\n")
+
                 torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),
