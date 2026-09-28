@@ -1,6 +1,15 @@
 """
 Sequel matching driver. Relation-specific: direction='after', file paths,
 output naming. Matching mechanics live in matching_core.py.
+
+Performance note: cosine-candidate query texts are batch-encoded in a single
+model.encode() call instead of one-at-a-time in a loop. This does not change
+the matching methodology (same embeddings, same threshold, same reranking) —
+it only avoids the huge per-call overhead of unbatched CPU inference, which
+was the entire cause of the full-corpus run being slow (400-book scale had
+few enough cosine candidates for the unbatched loop to finish in under a
+minute; full-corpus scale has ~10-13x more, so the same unbatched loop
+scaled linearly instead of amortizing).
 """
 
 import argparse
@@ -55,6 +64,8 @@ def main():
                               "default 400-book LLM_FILES_BY_VERSION dict.")
     parser.add_argument("--test-label", default="test_run",
                          help="Label used in the output filename when --test-file is set.")
+    parser.add_argument("--batch-size", type=int, default=128,
+                         help="Batch size for encoding cosine-candidate query texts.")
     args = parser.parse_args()
 
     META_FILE = CORPUS_FILES[args.version]["meta"]
@@ -100,6 +111,9 @@ def main():
         print(f"  Books with a match to check: {len(true_rows)}")
 
         results = []
+        cosine_pending = []  # (central_id, central_title, llm_match_title, query_text)
+
+        # Pass 1: resolve exact matches immediately, queue everything else for batch encoding
         for _, row in true_rows.iterrows():
             central_id = int(row['item_id'])
             m_title = str(row['match_title'])
@@ -136,33 +150,44 @@ def main():
                 continue
 
             query_text = f"{m_title} {m_desc}".strip()
-            query_vec = model.encode([query_text], convert_to_numpy=True)[0]
-            sims = cosine_sim_matrix(query_vec, embeddings)
-            central_idx = item2index.get(central_id)
-            if central_idx is not None:
-                sims[central_idx] = -1.0
+            cosine_pending.append((central_id, row['title'], m_title, query_text))
 
-            top5_idx = np.argsort(-sims)[:5]
-            top5 = [(index2item[i], round(float(sims[i]), 4)) for i in top5_idx]
-
-            top1_id, top1_score, rerank_used = rerank_by_series_position(
-                row['title'], top5, id_to_title, direction=DIRECTION
+        # Pass 2: batch-encode every queued query text in one call, then compute cosine/coherence per row
+        if cosine_pending:
+            print(f"  Batch-encoding {len(cosine_pending):,} cosine-candidate queries "
+                  f"(batch_size={args.batch_size})...")
+            query_texts = [qt for (_, _, _, qt) in cosine_pending]
+            query_vecs = model.encode(
+                query_texts, convert_to_numpy=True, batch_size=args.batch_size, show_progress_bar=True
             )
 
-            coh = coherence(central_id, top1_id) if top1_score >= EXPERIMENTAL_THRESHOLD else None
-            results.append({
-                'item_id': central_id, 'central_title': row['title'], 'llm_match_title': m_title,
-                'match_type': 'cosine_reranked_by_series_position' if rerank_used else 'cosine',
-                'matched_item_id': top1_id if top1_score >= EXPERIMENTAL_THRESHOLD else '',
-                'matched_title': id_to_title.get(top1_id, '') if top1_score >= EXPERIMENTAL_THRESHOLD else '',
-                'top1_score': top1_score, 'top1_item_id': top1_id,
-                'top3_matches': '; '.join(f"{id_to_title.get(i,'')} ({s})" for i, s in top5[:3]),
-                'top5_matches': '; '.join(f"{id_to_title.get(i,'')} ({s})" for i, s in top5),
-                'above_experimental_threshold': top1_score >= EXPERIMENTAL_THRESHOLD,
-                'central_matched_coherence': round(coh, 4) if coh is not None else '',
-                'low_coherence_flag': (coh is not None and coh < EXPERIMENTAL_THRESHOLD),
-                'series_match': '',
-            })
+            for (central_id, central_title, m_title, _), query_vec in zip(cosine_pending, query_vecs):
+                sims = cosine_sim_matrix(query_vec, embeddings)
+                central_idx = item2index.get(central_id)
+                if central_idx is not None:
+                    sims[central_idx] = -1.0
+
+                top5_idx = np.argsort(-sims)[:5]
+                top5 = [(index2item[i], round(float(sims[i]), 4)) for i in top5_idx]
+
+                top1_id, top1_score, rerank_used = rerank_by_series_position(
+                    central_title, top5, id_to_title, direction=DIRECTION
+                )
+
+                coh = coherence(central_id, top1_id) if top1_score >= EXPERIMENTAL_THRESHOLD else None
+                results.append({
+                    'item_id': central_id, 'central_title': central_title, 'llm_match_title': m_title,
+                    'match_type': 'cosine_reranked_by_series_position' if rerank_used else 'cosine',
+                    'matched_item_id': top1_id if top1_score >= EXPERIMENTAL_THRESHOLD else '',
+                    'matched_title': id_to_title.get(top1_id, '') if top1_score >= EXPERIMENTAL_THRESHOLD else '',
+                    'top1_score': top1_score, 'top1_item_id': top1_id,
+                    'top3_matches': '; '.join(f"{id_to_title.get(i,'')} ({s})" for i, s in top5[:3]),
+                    'top5_matches': '; '.join(f"{id_to_title.get(i,'')} ({s})" for i, s in top5),
+                    'above_experimental_threshold': top1_score >= EXPERIMENTAL_THRESHOLD,
+                    'central_matched_coherence': round(coh, 4) if coh is not None else '',
+                    'low_coherence_flag': (coh is not None and coh < EXPERIMENTAL_THRESHOLD),
+                    'series_match': '',
+                })
 
         out_df = pd.DataFrame(results)
         out_suffix = '' if args.version == 'A' else f'_v{args.version}'
