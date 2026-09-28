@@ -1,0 +1,401 @@
+item_id,title,stratum,ground_truth_has_sequel,source
+23203542,"The Silence of Six (SOS, #1)",positive,True,existing_30
+20944621,"Feuds (The Feuds, #1)",positive,True,existing_30
+18108877,"Timebound (The Chronos Files, #1)",positive,True,existing_30
+11778281,"Destined (Destined, #1)",positive,True,existing_30
+16064396,"The Vanished (Blemished, #2)",positive,True,existing_30
+10637748,"The Pledge (The Pledge, #1)",positive,True,existing_30
+11382304,"Blood Past (Warriors of Ankh, #2)",positive,True,existing_30
+11178367,"Dark Territory (The Tracks, #1)",positive,True,existing_30
+1693030,"White Water Terror (The Nancy Drew Files, #6)",positive,True,existing_30
+21569527,"The Heart of Betrayal (The Remnant Chronicles, #2)",positive,True,existing_30
+6096818,Evolution (Masks #2),positive,True,existing_30
+10380227,"Unlovable (Port Fare, #1)",positive,True,existing_30
+18714697,"Forgiveness and Permission (The Ghost Bird, #4)",positive,True,existing_30
+17930217,"Fearsome Dreamer (Fearsome Dreamer, #1)",positive,True,existing_30
+26305543,"Phoenix Awakens (The Phoenix, #1)",positive,True,existing_30
+16075522,"Reaction (Reflection, #2)",negative,False,existing_30
+7248435,"The Chaos (Numbers, #2)",negative,False,existing_30
+20983366,"Wayfarer (Passenger, #2)",negative,False,existing_30
+9266769,"Summer and the City (The Carrie Diaries, #2)",negative,False,existing_30
+18371666,"Invisible (The Twixt, #2)",negative,False,existing_30
+15446388,"Untitled (Guardian Angels, #2)",negative,False,existing_30
+502301,"A Non-Blonde Cheerleader in Love (Cheerleader Trilogy, #3)",negative,False,existing_30
+28585057,"Disruptor (Seeker, #3)",negative,False,existing_30
+16181187,"Capital (Linx, #4)",negative,False,existing_30
+16005152,"Griffin's Storm (Griffin, #3)",negative,False,existing_30
+17261185,"Friends and Traitors (Slayers, #2)",negative,False,existing_30
+13224793,"A Witch Alone (Winter Trilogy, #3)",negative,False,existing_30
+33147524,"Glass Faerie (Creepy Hollow, #7)",negative,False,existing_30
+53134,"Magic Lessons (Magic or Madness, #2)",negative,False,existing_30
+9893358,"Burned (Pretty Little Liars, #12)",negative,False,existing_30
+1772943,"First Date (The Gymnasts, #13)",positive,True,new
+37780,"Anatomy of a Boyfriend (Anatomy, #1)",positive,True,new
+12127750,"The Mark of Athena (The Heroes of Olympus, #3)",positive,True,new
+23846024,"The Conjurer's Riddle (The Inventor's Secret, #2)",positive,True,new
+147801,"Black Water (Pendragon, #5)",positive,True,new
+561403,"The It Girl (It Girl, #1)",positive,True,new
+412178,"The Fowlers of Sweet Valley (Sweet Valley High Magna Editions, #11)",positive,True,new
+633794,"Speed (Smallville Series for Young Adults, #5)",positive,True,new
+17415258,"The Fractured: Elena (Fractured, #1; Blemished, #2.5)",positive,True,new
+3432478,"The Forest of Hands and Teeth (The Forest of Hands and Teeth, #1)",positive,True,new
+13415148,"Dear Diary: Pride (Dear Diary, #2)",positive,True,new
+15847736,"Appearances Matter (Dumb Jock, #3)",positive,True,new
+10222362,"MILA 2.0 (MILA 2.0, #1)",positive,True,new
+18844837,"Spark (Spark Trilogy, #1)",positive,True,new
+21469162,"Fight for Power (The Rule of Three, #2)",positive,True,new
+22460322,"The World Forgot (Ever-Expanding Universe, #3)",positive,True,new
+13618622,"Beautiful Beast (Enchanted Fairytales, #1)",positive,True,new
+13552764,The Interrogation of Ashala Wolf (The Tribe #1),positive,True,new
+9752754,Fuse (Pure #2),positive,True,new
+17208557,"Just a Little Embrace (Just a Little, #2)",positive,True,new
+12780764,"Vengeance (Transcend Time, #1.5)",positive,True,new
+23008376,"The Ruby Iyer Diaries (Ruby Iyer Series, #0.5)",positive,True,new
+5455873,"Dead Girl Dancing (Dead Girl, #2)",positive,True,new
+28512813,"Into the Forest (Curses of VIII, #0.5)",positive,True,new
+18517794,"Alliance (The Paladin Prophecy, #2)",positive,True,new
+332775,"Incarceron (Incarceron, #1)",positive,True,new
+17679367,"Outcasts (Safe Lands, #2)",positive,True,new
+13450339,"Poison Princess (The Arcana Chronicles, #1)",positive,True,new
+1242843,"Laura (Sunfire, #10)",positive,True,new
+13459460,"Please Don't Tell (Please Don't Tell, #1)",positive,True,new
+29749085,"Wonder Woman: Warbringer (DC Icons, #1)",positive,True,new
+10446897,"Rumored (The Witches of Santa Anna, #3)",positive,True,new
+298730,"Among the Barons (Shadow Children, #4)",positive,True,new
+8621466,"One Hundred Candles (Past Midnight, #2)",positive,True,new
+30731715,"Pandora (Guardian Angels, #1)",positive,True,new
+894164,"Jade (Wildflowers, #3)",positive,True,new
+21859363,"Breaking the Rules (Pushing the Limits, #1.5)",positive,True,new
+14740456,"The Prey (The Hunt, #2)",positive,True,new
+25877185,Finding Perfect (Finding Perfect #1),positive,True,new
+16059428,"Replica (Replica, #1)",positive,True,new
+13031257,"The Night Itself (The Name of the Blade, #1)",positive,True,new
+13604849,"A Field Guide to Vampires: Annotated by Lucy Hamilton (Drake Chronicles, #4.5)",positive,True,new
+115723,"Normal (Fearless, #31)",positive,True,new
+660521,"Unfinished Symphony (Logan, #3)",positive,True,new
+352753,"Six Months to Live (Dawn Rochelle, #1)",positive,True,new
+7896527,"Throne of Glass (Throne of Glass, #1)",positive,True,new
+13597740,"Rise of the Arcane Fire (The Secret Order, #2)",positive,True,new
+5778773,"Never Cry Werewolf (Never Cry Werewolf, #1)",positive,True,new
+13836,"Wild Magic (Immortals, #1)",positive,True,new
+13419891,"The Assassin and the Desert (Throne of Glass, #0.3)",positive,True,new
+102853,"The Scarlet Letterman (Bard Academy, #2)",positive,True,new
+11550178,"Bridger (Bridger, #1)",positive,True,new
+17283696,"Tribulation (Rapture Trilogy, #2)",positive,True,new
+5562484,"Dead Is So Last Year (Dead Is, #3)",positive,True,new
+20849558,"The Fall (The Siren, #2)",positive,True,new
+20321703,"Drop of Doubt (The Ghost Bird, #5)",positive,True,new
+26200237,Hybrid (The Domino Project #2),positive,True,new
+13557662,"Insanity (Asylum, #1)",positive,True,new
+29749098,"Catwoman: Soulstealer (DC Icons, #3)",positive,True,new
+22749788,Undertow (Undertow #1),positive,True,new
+2767052,"The Hunger Games (The Hunger Games, #1)",positive,True,new
+8686026,"Unnatural (Archangel Academy, #1)",positive,True,new
+9415964,"The Magnolia League (Magnolia League, #1)",positive,True,new
+7402393,Nightshade (Nightshade #1; Nightshade World #4),positive,True,new
+25210273,"Hidden Heart (Hidden Saga, #2)",positive,True,new
+182598,"Moonlight Secrets (Fear Street Nights, #1)",positive,True,new
+22638095,"Autumn's Kiss (Autumn Falls, #2)",positive,True,new
+58889,"Sandry's Book (Circle of Magic, #1)",positive,True,new
+557157,"A Model Crime (The Nancy Drew Files, #51)",positive,True,new
+12337271,"Gates of Rome (TimeRiders, #5)",positive,True,new
+15758989,"The Blight (Eden's Root Trilogy, #0.5)",positive,True,new
+25429929,"Tainted Energy (The Energy Series, #1)",positive,True,new
+13486348,"Prophet (Struck, #0.5)",positive,True,new
+16094854,The Orphanage of Doom (The Grimm Chronicles #4),positive,True,new
+27209626,"Sunny Side Up (Geek Girl, #4.5)",positive,True,new
+6381368,"Dark Moon (Changeling, #2)",positive,True,new
+292388,"White Lies (Sweet Valley High, #52)",positive,True,new
+22593010,"Out of Ruins (From the Wreckage, #2)",positive,True,new
+9462812,"Die for Me (Revenants, #1)",positive,True,new
+16301111,"Always You (Best Friend, #1)",positive,True,new
+22614886,"Until Midnight (Alienated, #1.5)",positive,True,new
+17376220,Assured Destruction (Assured Destruction #1),positive,True,new
+22822954,"Under Cover (Agent 21, #5)",positive,True,new
+302949,"Claudia and the Great Search (The Baby-Sitters Club, #33)",positive,True,new
+20648285,Silvern (Gilded #2),positive,True,new
+17334063,"Saving Raphael Santiago (The Bane Chronicles, #6)",positive,True,new
+1330552,"Fear of Falling (The Gymnasts, #16)",positive,True,new
+17189824,"Supervillain Hunters, International (Supervillain of the Day, #1.4)",positive,True,new
+20324379,"Love and Decay: Kane's Law (Love and Decay, #5.5)",positive,True,new
+518848,"Sabriel (Abhorsen,  #1)",positive,True,new
+6431790,"Fang (Maximum Ride, #6)",positive,True,new
+10129062,"Prophecy (The Dragon King Chronicles, #1)",positive,True,new
+13424356,"Fire & Ash (Rot & Ruin, #4)",positive,True,new
+7059135,"Inside Out (Insider, #1)",positive,True,new
+615943,"Jennifer Scales and the Messenger of Light (Jennifer Scales, #2)",positive,True,new
+25215710,"A Faerie's Secret (Creepy Hollow, #4)",positive,True,new
+39636,"Twisted (Fearless, #4)",positive,True,new
+1865838,"How Do You Say Goodbye (Sweet Dreams, #16)",positive,True,new
+5391115,"The Awakening (Darkest Powers, #2)",positive,True,new
+18522639,"Rain (Rain, #1)",positive,True,new
+601547,"The Roommate (Nightmare Hall, #2)",positive,True,new
+11479285,"Breathe (Sea Breeze, #1)",positive,True,new
+22909812,"The Burning Hand (The Orphan Queen, #0.3)",positive,True,new
+23278280,"Off the Page (Between the Lines, #2)",positive,True,new
+18212914,"Broken Spell (Singularity, #2)",positive,True,new
+13565676,"The Assassin and the Empire (Throne of Glass, #0.5)",positive,True,new
+13574710,"The Curiosities: A Collection of Stories (The Curiosities, #1)",positive,True,new
+18284883,"Broken (Beautifully Broken, #1)",positive,True,new
+22913616,"The Girl in the Gray Sweatshirt (Immortal Game, #0.5)",positive,True,new
+12937309,"One Black Rose (One Black Rose, #1)",positive,True,new
+6686092,"Lies (Gone, #3)",positive,True,new
+7234801,"Blood Feud (Drake Chronicles, #2)",positive,True,new
+23151530,"Henge (Le Fay, #1)",positive,True,new
+290459,"Big Brother's in Love! (Sweet Valley Twins, #57)",positive,True,new
+18041808,"Destiny (Waiting for Forever, #2)",positive,True,new
+393086,"Betrayed (Fearless, #24)",positive,True,new
+22188,"Gossip Girl (Gossip Girl, #1)",positive,True,new
+29618746,"Assassins: Discord (Assassins, #1)",positive,True,new
+9369687,"Trial by Fire (Raised by Wolves, #2)",positive,True,new
+303275,"Prisoner of Cabin 13 (Sabrina the Teenage Witch, #11)",positive,True,new
+13413517,"xoxoxo (Stories About Melissa, #2)",positive,True,new
+13180484,"Life's a Witch (Life's a Witch, #2)",positive,True,new
+18089999,"Frozen (Taken, #2)",positive,True,new
+294735,"The Princess of Pop (Truth or Dare, #2)",positive,True,new
+38564,"Boys that Bite (Blood Coven Vampire, #1)",positive,True,new
+35827959,"Before the Ashes (Kingdom Come, #0.5)",positive,True,new
+3558003,"Lord of Misrule (The Morganville Vampires, #5)",positive,True,new
+25788145,"The Great Hunt (Eurona Duology, #1)",positive,True,new
+17784128,"Foretold (Vanguard Legacy, #1)",positive,True,new
+1297663,"True Blue (Sweet Valley Jr. High, #18)",positive,True,new
+11128881,"Abandoned (Little Boy Lost, #2)",positive,True,new
+330843,"Betrayed (Fingerprints, #5)",positive,True,new
+7886945,"Demon Games (Changeling, #4)",positive,True,new
+23314948,"Powerless (The Hero Agenda, #1)",positive,True,new
+27158739,"Fall of Hades (Michael Vey, #6)",positive,True,new
+29749090,"Batman: Nightwalker (DC Icons, #2)",positive,True,new
+18717049,"Love and Decay, Episode Nine (Love and Decay, #9)",positive,True,new
+2969219,"Salt (The Salt Trilogy, #1)",positive,True,new
+6693415,"Scandal (Private, #11)",positive,True,new
+17070769,The Hidden Deep (Threshold #2),positive,True,new
+18170039,"The Guard (The Selection, #2.5)",positive,True,new
+25182782,Vigilance (Regina Shen #2),positive,True,new
+12901365,"The Deepest Cut (MacKinnon Curse, #1)",positive,True,new
+30330916,"The Edge of Juniper (The Juniper Series, #1)",positive,True,new
+13533670,"Katya's World (Russalka Chronicles, #1)",positive,True,new
+15819010,Dying To Forget (The Station #1),positive,True,new
+9644151,"Ashfall (Ashfall, #1)",positive,True,new
+16145072,"End of the Innocence (Tales from Foster High, #4)",positive,True,new
+2411725,"Ringmaster (Darcie Lock, #1)",positive,True,new
+6147544,"The Tycoon's Rebel Bride (The Anetakis Tycoons, #2)",positive,True,new
+22475352,"Impulse (Submerged Sun, #2)",negative,False,new
+14287992,"Deep Oblivion (Mortal Chaos, #2)",negative,False,new
+8507864,"The Iron Quill (The Pace, #3)",negative,False,new
+18589903,"Beyond the Parallel (Parallelogram, #4)",negative,False,new
+25056008,"Promises I Made (Lies I Told, #2)",negative,False,new
+3231308,"Huntress (Night World, #7)",negative,False,new
+17208619,"Third Lie's the Charm (The Liar Society, #3)",negative,False,new
+24830447,"Blufire  (Desirable Creatures, #2)",negative,False,new
+19155700,"Further Flirting Games (The Flirting, #3)",negative,False,new
+17185533,"The Bone Trail (Wyrmeweald, #3)",negative,False,new
+27015385,"Relentless (The Hero Agenda, #2)",negative,False,new
+24481697,"Map of Fates (The Conspiracy of Us, #2)",negative,False,new
+21897654,"Will to Survive (The Rule of Three, #3)",negative,False,new
+15520672,"After Daybreak (Darkness Before Dawn Trilogy, #3)",negative,False,new
+23847993,"Evolution (Extraction, #3)",negative,False,new
+16173327,"Trouble's Brewing (Stirring Up Trouble, #2)",negative,False,new
+10397956,"With the Enemy (Tomorrow Girls, #3)",negative,False,new
+10803794,"Skinned (The Shadowing, #2)",negative,False,new
+260043,"The Third Evil (Fear Street Cheerleaders, #3)",negative,False,new
+24965090,"As Black as Ebony (Lumikki Andersson, #3)",negative,False,new
+25432577,"Adventures in Homicide and Heartbreak (Funeral Crashing, #4)",negative,False,new
+27161189,"United as One (Lorien Legacies, #7)",negative,False,new
+16136105,"The Witch is Back (Life's a Witch, #3)",negative,False,new
+18525702,"Of Neptune (The Syrena Legacy, #3)",negative,False,new
+23976387,"Fire of Fryslan (Tales of Skylge, #3)",negative,False,new
+11784607,"Paranoia (The Witches of Santa Anna, #11)",negative,False,new
+17854360,"Free Falling  (Best Friend, #2)",negative,False,new
+22847838,"The Gatekeeper's Promise (Gatekeeper's Saga, #6)",negative,False,new
+18339894,"The A-Word (Sweet Dead Life, #2)",negative,False,new
+27240681,"The Pack (The Wanderers, #2)",negative,False,new
+2493973,"The Diamond of Darkhold (Book of Ember, #4)",negative,False,new
+13628855,"Insider (Outsider, #2)",negative,False,new
+17820485,"Storm Shells (Wishes, #3)",negative,False,new
+9642278,"Original Sin (Personal Demons, #2)",negative,False,new
+6318035,"Goth Girl Rising (The Astonishing Adventures of Fanboy and Goth Girl, #2)",negative,False,new
+18006247,"Foreverland is Dead (Foreverland, #2)",negative,False,new
+20805267,"Finding Me Again (Unexpected Love, #3)",negative,False,new
+15847905,"The Steam Mole (Cuttlefish, #2)",negative,False,new
+23269128,"Never Forgotten (Collective, #3)",negative,False,new
+16076614,"Blood Curse (Pulse, #8)",negative,False,new
+9791910,"Unchanged (Unremembered, #3)",negative,False,new
+28575508,"Reckoning (The Watchers, #5)",negative,False,new
+18192612,"Second to No One (Second Kiss, #2)",negative,False,new
+28512547,"Aerie (Magonia, #2)",negative,False,new
+13581486,"Letting Go (Hold on Tight, #2)",negative,False,new
+15835685,"Clash (Crash, #2)",negative,False,new
+10233236,"The Onyx Talisman (Talisman, #3)",negative,False,new
+9395215,"Everlasting (The Immortals, #6)",negative,False,new
+25059637,"Mafiosa (Blood for Blood, #3)",negative,False,new
+31950064,"Embers in the Sea (Fire in the Woods, #3)",negative,False,new
+20262398,"Entombed (Gravediggers, #3)",negative,False,new
+93780,"The Fire (Losing Christina, #3)",negative,False,new
+23718697,"Midnight Dolls (The Dolls, #2)",negative,False,new
+12846479,"Destined (Wings, #4)",negative,False,new
+1215870,"New Beginnings (Heartland, #18)",negative,False,new
+21899019,"Choices (Kiera's Quest, #4)",negative,False,new
+15764571,"Subversive  (The Warrior, #3)",negative,False,new
+31371234,"The Scattering (The Outliers, #2)",negative,False,new
+16092898,"Shadowed (Fated, #3)",negative,False,new
+133827,"Heart of Glass (A-List, #8)",negative,False,new
+16053402,"Mostly Dead (Barely Alive, #3)",negative,False,new
+13378019,"Alight: The Peril (Pyxis, #2)",negative,False,new
+9918128,"The Hidden (The Hollow, #3)",negative,False,new
+31841813,"Dove Alight (Dove Chronicles, #3)",negative,False,new
+29225046,"Hellfighters (The Devil's Engine, #2)",negative,False,new
+12700337,"If I Should Die (Revenants, #3)",negative,False,new
+18516682,"Every Move (Every, #3)",negative,False,new
+22398328,"Happenstance 3 (Happenstance, #3)",negative,False,new
+18297655,"Willowgrove (Hemlock, #3)",negative,False,new
+23124475,"All That Remains (From The Wreckage, #3)",negative,False,new
+16091537,"Lunatic Revenge (Lunatic Life, #3)",negative,False,new
+16031420,"A Star is Born (The Most Popular Guy in the School, #3)",negative,False,new
+14686464,"Arise (Syrenka, #3)",negative,False,new
+23567293,"The Voicemail of Magnus Bane (The Bane Chronicles, #11)",negative,False,new
+13446541,"Lucid (Brightest Kind of Darkness, #2)",negative,False,new
+19052254,"Love and Decay, Episode Twelve (Love and Decay, #12)",negative,False,new
+28308498,"Inspired by Frost (Crystal Frost, #3)",negative,False,new
+293151,"Midnight Games (Fear Street Nights, #2)",negative,False,new
+18774843,"Goose (Paper Aeroplanes, #2)",negative,False,new
+24886378,"Witch Hunter (The Witch Hunter, #1)",negative,False,new
+31291543,"The Scarecrow Queen (The Sin Eater’s Daughter, #3)",negative,False,new
+29235197,"Barefoot on the Wind (The Moonlit Lands, #2)",negative,False,new
+31751580,"Forever in Love (City Love, #3)",negative,False,new
+17342414,"The Sowing (The Torch Keeper, #2)",negative,False,new
+18459648,"Pride and Prep School (Snark and Circumstance, #3)",negative,False,new
+16058269,"Submerging (Swans Landing, #2)",negative,False,new
+8507450,"The Whisper (The Roar, #2)",negative,False,new
+12507214,"Girl of Nightmares (Anna, #2)",negative,False,new
+4906733,"Spring Breakup (Aspen Brooks, #3)",negative,False,new
+17149158,"Sacrifice (Elemental, #5)",negative,False,new
+13042766,"Queen of the Night (This is Shyness, #2)",negative,False,new
+26219455,"The Edge of the Abyss (The Abyss Surrounds Us, #2)",negative,False,new
+15727440,"Shadow on the Sun (Hell's Cross, #3)",negative,False,new
+19116893,"The Reaping (The Burn, #3)",negative,False,new
+540181,"The Salvation (Roswell High, #10)",negative,False,new
+2474204,"Hunted (Vampire Beach, #6)",negative,False,new
+31632115,"Triple Threat (Lois Lane, #3)",negative,False,new
+9175379,"The Land of the Dead (The Oz Chronicles, #4)",negative,False,new
+17950614,"UnDivided (Unwind, #4)",negative,False,new
+21936807,"City 1 (Revolution 19, #3)",negative,False,new
+12578370,"Perfect Lies (Mind Games, #2)",negative,False,new
+12395883,"Unbelievable (Port Fare, #2)",negative,False,new
+7877758,"Phoenix (Beautiful Dead, #4)",negative,False,new
+984136,"Hostage (Alpha Force, #4)",negative,False,new
+17988263,"Valley of Darkness Part 1 & Part 2 (Fields of Elysium, #2)",negative,False,new
+7007675,"Love and Peaches (Peaches, #3)",negative,False,new
+16241634,"Shadow Train (The Tracks, #3)",negative,False,new
+19274338,"The Mind Keepers (Mind Readers, #4)",negative,False,new
+17974548,"United (Exalted, #3)",negative,False,new
+17558151,"Of Dreams and Rust (Of Metal and Wishes, #2)",negative,False,new
+12893742,"The Serpent's Shadow (Kane Chronicles, #3)",negative,False,new
+17932303,"Fighting for Infinity (The Kindrily, #3)",negative,False,new
+20888156,"Mindsurge (Mindspeak, #3)",negative,False,new
+9897164,"Apollyon (Covenant, #4)",negative,False,new
+4002159,"Double Cross (Noughts & Crosses, #4)",negative,False,new
+850391,"Horse Care (Saddle Club, #76)",negative,False,new
+27230789,"Honestly Ben (Openly Straight, #2)",negative,False,new
+7540092,"Monsters of Men (Chaos Walking, #3)",negative,False,new
+23461945,"The Girl at the Center of the World (Islands at the End of the World, #2)",negative,False,new
+8960,"Vampire Mountain (Cirque Du Freak, #4)",negative,False,new
+16048365,"The Mapmakers Union (The Doorknob Society, #3)",negative,False,new
+16058238,"Dead Endz (Zombie Games, #3)",negative,False,new
+17253787,"Suture (The Bleeding Worlds, #2)",negative,False,new
+18469705,"The Sorcerer Heir (The Heir Chronicles, #5)",negative,False,new
+22850111,"Liberated (Banded, #3)",negative,False,new
+7864437,"The Death Cure (Maze Runner, #3)",negative,False,new
+35066264,"Nephilim (Orion Chronicles, #2)",negative,False,new
+23215471,"Royal Wedding (The Princess Diaries, #11)",negative,False,new
+1183061,"The Wyrd of Willowmere (Willowmere Chronicles, #3)",negative,False,new
+20557540,"Miyuki (Unusuals, #2)",negative,False,new
+2774204,"Nothing to Lose (Robyn Hunter, #3)",negative,False,new
+29502065,"Contribute (Holo, #2)",negative,False,new
+25263399,"Chasing Impossible (Pushing the Limits, #5)",negative,False,new
+12243374,"Alice on Board (Alice, #24)",negative,False,new
+34902957,"When Smoke Rains Down (Kingdom Come, #2)",negative,False,new
+1020421,"The Final Eclipse (Daughters of the Moon, #13)",negative,False,new
+21529626,"The Hunted (The Living, #2)",negative,False,new
+8535273,"The Dark and Hollow Places (The Forest of Hands and Teeth, #3)",negative,False,new
+7669259,"Everfound (Skinjacker, #3)",negative,False,new
+25732113,"The Skylighter (The Keepers' Chronicles, #2)",negative,False,new
+27132749,"The Natural History of Us (The Fine Art of Pretending, #2)",negative,False,new
+17264027,"Fire & Shadows (Ashes and Ice, #2)",negative,False,new
+21466631,"Boundary (Books of Eva, #2)",negative,False,new
+17379619,"The Eve (The Eden Trilogy, #3)",negative,False,new
+13633699,"Senshi (Katana, #2)",negative,False,new
+15714722,"A Tale of Two Centuries (My Super Sweet Sixteenth Century, #2)",negative,False,new
+18801694,"We Can Work It Out (The Lonely Hearts Club, #2)",negative,False,new
+23265494,"Captive Films: Season 1 (Captive Films, #6)",negative,False,new
+17901410,"Shattered (Slated, #3)",negative,False,new
+9915707,"Endure (Need, #4)",negative,False,new
+127428,"The End of Forever (Erin Bennett, #1-2)",ambiguous,,new
+13142099,"Moa (Moa, #1)",ambiguous,,new
+8269450,"Darkest Powers Trilogy (Darkest Powers, #1-3)",ambiguous,,new
+30025336,All the Crooked Saints,ambiguous,,new
+20387343,Solstice,ambiguous,,new
+31138152,Tears of Time,ambiguous,,new
+31938167,"Chameleon Moon (Chameleon Moon, #1)",ambiguous,,new
+11409671,"The Pearl Savage (Savage, #1)",ambiguous,,new
+30301482,"Wonderland (The Realms Series, #1)",ambiguous,,new
+176650,"Silent Night 3 (Fear Street Superchiller, #11)",ambiguous,,new
+238836,Money Hungry,ambiguous,,new
+30309128,"Stealing Snow (Stealing Snow, #1)",ambiguous,,new
+34625067,"Colorless (Colorless, #1)",ambiguous,,new
+13119263,"Vestige (Vestige, #1)",ambiguous,,new
+26240663,Seven Ways We Lie,ambiguous,,new
+13125960,"Soul Kissed (Moonstone Saga, #1)",ambiguous,,new
+2957010,Retaliation,ambiguous,,new
+7664713,"Vesper (Deviants, #1)",ambiguous,,new
+33153576,Ultimate Nyssa Glass: The Complete Series,ambiguous,,new
+32484322,The Traitor's Crux,ambiguous,,new
+678891,Bloom,ambiguous,,new
+3325931,Highway to Hell (Maggie Quinn: Girl Vs. Evil #3),ambiguous,,new
+21817274,"Tales of Ever (Tales of Ever, #1-6)",ambiguous,,new
+18196232,"Gateway to Faerie (Gateway to Faerie, #1)",ambiguous,,new
+15780961,"Dolmarehn (The Otherworld Series, #2)",ambiguous,,new
+10845991,"Oddily (Oddily, #1)",ambiguous,,new
+10490175,"Dry Souls (Dry Souls, #1)",ambiguous,,new
+26183418,Broken Trouble (Broken Storm #1),ambiguous,,new
+13260739,Scorpion Shards (Star Shards Chronicles #1),ambiguous,,new
+6668914,"Watch for Me by Moonlight (The Midnight Twins, #3)",ambiguous,,new
+30185590,"Refuse (Recoil Trilogy, #2)",ambiguous,,new
+18158189,Twisted Games (The Fate Trilogy #2),ambiguous,,new
+32912370,"The Broken Ones (The Malediction Trilogy, #0.6)",ambiguous,,new
+26143713,"Poison (Wind Dancer, #1)",ambiguous,,new
+28105,"The Steps (Steps, #1)",ambiguous,,new
+17383994,"Divergent Series Complete Box Set (Divergent, #1-3)",ambiguous,,new
+12994082,"Finally and Forever (Katie Weldon, #4)",ambiguous,,new
+22206799,"Gone Series Complete Collection: Gone, Hunger, Lies, Plague, Fear, Light",ambiguous,,new
+17884103,"Black Dog (Black Dog, #1)",ambiguous,,new
+23656448,"Bad Intentions (Bad Intentions, #1)",ambiguous,,new
+23596997,Atlantis Twisting Tides (Lost Daughters of Atlantis #4.5),ambiguous,,new
+25756328,Love & Gelato,ambiguous,,new
+22895360,Inside the World of Die for Me,ambiguous,,new
+16148033,"The Undesirable (Undesirable, #1)",ambiguous,,new
+11508183,"The Skinjacker Trilogy: Everlost / Everwild / Everfound (Skinjacker, #1-3)",ambiguous,,new
+19112850,Phantoms In Philadelphia,ambiguous,,new
+10626594,The Scorpio Races,ambiguous,,new
+20737990,"Unglued (Holding On, #2)",ambiguous,,new
+20515740,Synchrony (Destiny #2),ambiguous,,new
+28101540,Under Rose-Tainted Skies,ambiguous,,new
+19547856,Simon vs. the Homo Sapiens Agenda,ambiguous,,new
+29922440,Revenge of the Evil Librarian,ambiguous,,new
+13580846,My Life with the Walter Boys (My Life with the Walter Boys #1),ambiguous,,new
+16079490,Georgetown Academy: Book Two,ambiguous,,new
+23719270,"Vengeance Road (Vengeance Road, #1)",ambiguous,,new
+17792558,"Broken Point (The Wayward Gifted, #1)",ambiguous,,new
+13034113,"Valkyrie Rising (Valkyrie, #1)",ambiguous,,new
+29065483,Children of Icarus,ambiguous,,new
+22059376,100 Proof Stud (The Darcy Walker Series #3),ambiguous,,new
+18513759,"The Dark World (Dark World, #1)",ambiguous,,new
+23228,Boy Meets Boy,ambiguous,,new
+21971874,"Birthright (Descendant, #2)",ambiguous,,new
+29806696,The Nightmare Birds (Strange Luck Series #2),ambiguous,,new
+16045315,Jesse's Girl,ambiguous,,new
+20517739,Far From You,ambiguous,,new
+31145148,The Love Interest,ambiguous,,new
+26309792,The Hearts We Sold,ambiguous,,new
+24380140,"Spelled (The Storymakers, #1)",ambiguous,,new
+28526192,"27 Hours (The Nightside Saga, #1)",ambiguous,,new
+22392431,Possess (Mary Hades #2),ambiguous,,new
