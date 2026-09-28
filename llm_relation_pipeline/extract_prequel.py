@@ -8,6 +8,7 @@ import csv
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 from ollama_client import chat_json
@@ -127,12 +128,28 @@ def load_done_ids(output_path):
     return done
 
 
+def process_book(args_tuple):
+    """One book, start to finish: extraction call + title-check call if needed.
+    This is the unit of work handed to the thread pool — everything inside it
+    is unchanged logic from the serial version, just called from a worker
+    thread instead of the main thread."""
+    model, prompt_template, book = args_tuple
+    result = call_model(model, book["title"], book["author"], prompt_template)
+    title_check = ""
+    if needs_title_check(result):
+        title_check = verify_title_exists(model, result["match_title"], result["match_author"])
+    return book, result, title_check
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", choices=["A", "B"], default="A")
     parser.add_argument("--model", choices=["llama3.1:8b", "mistral"], required=True)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--eval", action="store_true")
+    parser.add_argument("--workers", type=int, default=6,
+                         help="Concurrent requests to Ollama. Match this to (or keep it at "
+                              "or below) the server's OLLAMA_NUM_PARALLEL setting.")
     args = parser.parse_args()
 
     if args.eval:
@@ -165,7 +182,7 @@ def main():
         books = books[: args.limit]
 
     label = f"SAMPLE400 (Version {args.version})" if args.eval else f"Version {args.version}"
-    print(f"[prequel] {label}   Model: {args.model}   Books: {len(books):,}")
+    print(f"[prequel] {label}   Model: {args.model}   Books: {len(books):,}   Workers: {args.workers}")
 
     output_dir = "prequel_extraction"
     os.makedirs(output_dir, exist_ok=True)
@@ -202,35 +219,37 @@ def main():
         if not file_exists:
             writer.writeheader()
 
-        for i, book in enumerate(remaining, 1):
-            result = call_model(args.model, book["title"], book["author"], prompt_template)
-            title_check = ""
-            if needs_title_check(result):
-                title_check = verify_title_exists(args.model, result["match_title"], result["match_author"])
+        # ThreadPoolExecutor.map preserves submission order in what it yields,
+        # so writes below still happen in the same book order as the serial
+        # version (checkpoint/resume behavior is unchanged) — the concurrency
+        # is purely in how many requests are in flight to Ollama at once.
+        work_items = [(args.model, prompt_template, book) for book in remaining]
 
-            if result["parse_status"].startswith("fail"):
-                stats["parse_fail"] += 1
-            elif result["has_prequel"]:
-                stats["true"] += 1
-            else:
-                stats["false"] += 1
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for i, (book, result, title_check) in enumerate(pool.map(process_book, work_items), 1):
+                if result["parse_status"].startswith("fail"):
+                    stats["parse_fail"] += 1
+                elif result["has_prequel"]:
+                    stats["true"] += 1
+                else:
+                    stats["false"] += 1
 
-            writer.writerow({
-                "item_id": book["item_id"],
-                "title": book["title"],
-                "author": book["author"] or "",
-                **result,
-                "title_check": title_check,
-            })
-            f.flush()
+                writer.writerow({
+                    "item_id": book["item_id"],
+                    "title": book["title"],
+                    "author": book["author"] or "",
+                    **result,
+                    "title_check": title_check,
+                })
+                f.flush()
 
-            if i % CHECKPOINT_EVERY == 0 or i == len(remaining):
-                elapsed_total = time.time() - model_start
-                avg = elapsed_total / i
-                eta_min = (len(remaining) - i) * avg / 60
-                print(f"  [{i}/{len(remaining)}] yes={stats['true']} no={stats['false']} "
-                      f"fail={stats['parse_fail']} avg={avg:.2f}s/call ETA={eta_min:.1f}min "
-                      f"@ {datetime.now().strftime('%H:%M:%S')}")
+                if i % CHECKPOINT_EVERY == 0 or i == len(remaining):
+                    elapsed_total = time.time() - model_start
+                    avg = elapsed_total / i
+                    eta_min = (len(remaining) - i) * avg / 60
+                    print(f"  [{i}/{len(remaining)}] yes={stats['true']} no={stats['false']} "
+                          f"fail={stats['parse_fail']} avg={avg:.2f}s/call ETA={eta_min:.1f}min "
+                          f"@ {datetime.now().strftime('%H:%M:%S')}")
 
     total = time.time() - model_start
     print(f"\nDone. yes={stats['true']} no={stats['false']} fail={stats['parse_fail']}")
