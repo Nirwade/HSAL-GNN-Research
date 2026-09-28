@@ -5,11 +5,12 @@ Relation-specific scripts import this and supply their own prompt text.
 """
 
 import json
+import os
 import time
 
 import requests
 
-OLLAMA_URL = "http://localhost:11434/api/chat"
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat")
 REQUEST_TIMEOUT = 120
 MAX_RETRIES = 2
 
