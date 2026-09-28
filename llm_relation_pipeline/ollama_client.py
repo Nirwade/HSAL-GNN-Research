@@ -10,7 +10,7 @@ import time
 import requests
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
-REQUEST_TIMEOUT = 60
+REQUEST_TIMEOUT = 120
 MAX_RETRIES = 2
 
 
