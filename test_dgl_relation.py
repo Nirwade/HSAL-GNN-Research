@@ -163,6 +163,7 @@ def forward_backward(graphs, **kw):
     model = HSAL(user_num=n_users + 10, item_num=n_items_real + 10, input_dim=emb_dim, item_max_length=50, user_max_length=50,
                  feat_drop=0.0, attn_drop=0.0, user_long='orgat', user_short='att', item_long='orgat', item_short='att',
                  user_update='rnn', item_update='rnn', last_item=True, layer_num=2, data_name=data_name, **kw)
+    model = model.to(model.device)   # new_main_BPR.py does the same: HSAL(...).to(device)
     batch = dgl.batch(graphs)
     dev = model.device
     user = torch.stack([torch.as_tensor(g_u) for g_u in us]).long().reshape(-1)
@@ -181,6 +182,7 @@ gs = [x[0][0] for x in loaded]
 us = [x[1]['u_alis'] for x in loaded]
 lasts = [x[1]['last_alis'] for x in loaded]
 tgts = [x[1]['target'] for x in loaded]
+m = None
 try:
     m, loss = forward_backward(gs, use_rel=True, series_mode='bidir', series_typed=True)
     check('forward/backward with use_rel + bidir + typed series', bool(torch.isfinite(loss)), float(loss))

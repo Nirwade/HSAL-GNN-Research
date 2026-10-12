@@ -1,5 +1,6 @@
 #!/bin/bash
 source ccr/common.sh
+set -e
 python test_dgl_relation.py
 export MAX_USERS=300 TAGSUF=_smoke
 bash ccr/prep.sh
