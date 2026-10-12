@@ -1,0 +1,23 @@
+{
+  "filter": "all",
+  "prequel_rows": 4580,
+  "prequel_matched": 3115,
+  "sequel_rows": 6576,
+  "sequel_matched": 4526,
+  "after_self_loop": 7641,
+  "after_filter": 7641,
+  "same_series_pairs": 3135,
+  "same_series_direction_wrong_dropped": 673,
+  "conflicting_pairs_dropped": 328,
+  "duplicates_removed": 802,
+  "final_edges": 12466,
+  "final_edges_by_rtype": {
+    "1": 6233,
+    "0": 6233
+  },
+  "num_items": 8108,
+  "items_with_out_edge": 6269,
+  "items_with_in_edge": 6269,
+  "max_in_degree": 109,
+  "mean_in_degree": 1.9885149146594354
+}

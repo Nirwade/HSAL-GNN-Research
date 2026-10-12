@@ -50,9 +50,17 @@ def main():
     parser.add_argument("--model_record", action='store_true', default=False, help='record model')
     parser.add_argument("--resume", action="store_true", help="resume from checkpoint")
     parser.add_argument("--seed", type=int, default=0, help="random seed for this run")
+    # --- graph augmentation / series variants (defaults reproduce the original model) ---
+    parser.add_argument('--tag', default='', help='Newdata folder suffix written by new_data1.py --tag (e.g. _rel_strict_b5)')
+    parser.add_argument('--use_rel', action='store_true', help='use typed relates_to edges (graphs must come from new_data1.py --rel_edges)')
+    parser.add_argument('--series_mode', default='forward', choices=['forward', 'bidir'], help="series term: 'forward' = original, 'bidir' = later + earlier + same position")
+    parser.add_argument('--series_typed', action='store_true', help='add a direction embedding to series neighbours')
+    parser.add_argument('--max_batches', type=int, default=0, help='smoke test only: stop each loop after N batches (0 = off)')
     
     opt = parser.parse_args()
     print(opt.data)
+    # name suffix for non-default variants; empty for the original model, so original file names are unchanged
+    variant = opt.tag + ('_bidir' if opt.series_mode == 'bidir' else '') + ('_styped' if opt.series_typed else '') + ('_rel' if opt.use_rel else '')
 
     import random
     random.seed(opt.seed)
@@ -75,14 +83,14 @@ def main():
     
 
     if opt.record:
-        log_file = f'results/{opt.data}_seed{opt.seed}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
+        log_file = f'results/{opt.data}{variant}_seed{opt.seed}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
                 f'US_{opt.user_short}_IS_{opt.item_short}_La_{args.last_item}_UM_{opt.user_max_length}_IM_{opt.item_max_length}_K_{opt.k_hop}' \
                 f'_layer_{opt.layer_num}_l2_{opt.l2}'
         mkdir_if_not_exist(log_file)
         sys.stdout = Logger(log_file)
         print(f'Logging to {log_file}')
     if opt.model_record:
-        model_file = f'{opt.data}_seed{opt.seed}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
+        model_file = f'{opt.data}{variant}_seed{opt.seed}_ba_{opt.batchSize}_G_{opt.gpu}_dim_{opt.hidden_size}_ulong_{opt.user_long}_ilong_{opt.item_long}_' \
                 f'US_{opt.user_short}_IS_{opt.item_short}_La_{args.last_item}_UM_{opt.user_max_length}_IM_{opt.item_max_length}_K_{opt.k_hop}' \
                 f'_layer_{opt.layer_num}_l2_{opt.l2}'
         ##################################
@@ -103,10 +111,10 @@ def main():
     #####################
     
 
-    train_root = f'Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/train/'
+    train_root = f'Newdata/{opt.data}{opt.tag}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/train/'
 
-    test_root = f'Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/test/'
-    val_root = f'Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/val/'
+    test_root = f'Newdata/{opt.data}{opt.tag}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/test/'
+    val_root = f'Newdata/{opt.data}{opt.tag}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/val/'
     
     ################################################### 
     
@@ -144,7 +152,8 @@ def main():
     model = HSAL(user_num=user_num, item_num=item_num, input_dim=opt.hidden_size, item_max_length=opt.item_max_length,
                 user_max_length=opt.user_max_length, feat_drop=opt.feat_drop, attn_drop=opt.attn_drop, user_long=opt.user_long, user_short=opt.user_short,
                 item_long=opt.item_long, item_short=opt.item_short, user_update=opt.user_update, item_update=opt.item_update, last_item=opt.last_item,
-                layer_num=opt.layer_num, data_name=opt.data).to(device)
+                layer_num=opt.layer_num, data_name=opt.data,
+                use_rel=opt.use_rel, series_mode=opt.series_mode, series_typed=opt.series_typed).to(device)
     optimizer = optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2)
     
     #########################################################################################
@@ -163,6 +172,9 @@ def main():
     best_epoch = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     stop_num = 0
     start_epoch = 0
+    best_val_ndcg10 = -1.0      # validation-based selection (used with --val)
+    best_val_epoch = -1
+    test_at_best_val = None
 
     if opt.resume and os.path.exists(checkpoint_path):
         print("Loading checkpoint...")
@@ -173,7 +185,10 @@ def main():
         start_epoch = checkpoint["epoch"] + 1
         best_result = checkpoint["best_result"]
         best_epoch = checkpoint["best_epoch"]
-    
+        best_val_ndcg10 = checkpoint.get("best_val_ndcg10", -1.0)
+        best_val_epoch = checkpoint.get("best_val_epoch", -1)
+        test_at_best_val = checkpoint.get("test_at_best_val", None)
+
         print(f"Resumed from epoch {start_epoch}")
     ##################################################################
 
@@ -201,6 +216,9 @@ def main():
             neg_item = neg_item.to(device) # This is the Negative Item (from collate_bpr)
             
             iter += 1
+            if opt.max_batches and iter > opt.max_batches:
+                iter -= 1
+                break
             
             # Pass explicit pos_tar and neg_tar to the model
             # Ensure your HSAL model forward method accepts these arguments!
@@ -230,16 +248,22 @@ def main():
             val_loss_all, top_val = [], []
             val_loader = tqdm(val_data, desc=f"Epoch {epoch+1}/{opt.epoch} [Validation]")
 
-            with torch.no_grad:
-                for user, batch_graph, label, last_item, neg_tar in val_loader:
-                    score, top = model(batch_graph.to(device), user.to(device), last_item.to(device), neg_tar=torch.cat([label.unsqueeze(1), neg_tar], -1).to(device), is_training=False)
-                    val_loss = val_loss_func(score, label.to(device))
-                    val_loss_all.append(val_loss.append(val_loss.item()))
+            with torch.no_grad():
+                for b_i, (user, batch_graph, label, last_item, neg_tar) in enumerate(val_loader):
+                    if opt.max_batches and b_i >= opt.max_batches:
+                        break
+                    label = label.to(device)
+                    score, top = model(batch_graph.to(device), user.to(device), last_item.to(device), neg_tar=torch.cat([label.unsqueeze(1), neg_tar.to(device)], -1), is_training=False)
+                    val_loss = val_loss_func(score, label)
+                    val_loss_all.append(val_loss.item())
                     top_val.append(top.detach().cpu().numpy())
-                recall5, recall10, recall20, ndgg5, ndgg10, ndgg20 = eval_metric(top_val)
-                print('train_loss:%.4f\tval_loss:%.4f\tRecall@5:%.4f\tRecall@10:%.4f\tRecall@20:%.4f\tNDGG@5:%.4f'
-                    '\tNDGG10@10:%.4f\tNDGG@20:%.4f' %
-                    (epoch_loss, np.mean(val_loss_all), recall5, recall10, recall20, ndgg5, ndgg10, ndgg20))
+            # eval_metric returns 22 values: Recall@5..100 (11) then NDCG@5..100 (11)
+            val_metrics = eval_metric(top_val)
+            val_recall5, val_recall10, val_recall20 = val_metrics[0], val_metrics[1], val_metrics[2]
+            val_ndcg5, val_ndcg10, val_ndcg20 = val_metrics[11], val_metrics[12], val_metrics[13]
+            print('train_loss:%.4f\tval_loss:%.4f\tVal_Recall@5:%.4f\tVal_Recall@10:%.4f\tVal_Recall@20:%.4f\tVal_NDCG@5:%.4f'
+                '\tVal_NDCG@10:%.4f\tVal_NDCG@20:%.4f' %
+                (epoch_loss, np.mean(val_loss_all), val_recall5, val_recall10, val_recall20, val_ndcg5, val_ndcg10, val_ndcg20))
 
         # test
         print('start predicting: ', datetime.datetime.now())
@@ -250,6 +274,8 @@ def main():
 
         with torch.no_grad():
             for user, batch_graph, label, last_item, neg_tar in test_loader:
+                if opt.max_batches and iter >= opt.max_batches:
+                    break
                 iter+=1
                 user = user.to(device)
                 batch_graph = batch_graph.to(device)
@@ -263,13 +289,27 @@ def main():
                 all_top.append(top.detach().cpu().numpy())
                 all_label.append(label.cpu().numpy())
                 test_loader.set_postfix(test_loss=np.mean(all_loss))
-            recall5, recall10, recall20, recall30, recall40, recall50, recall60, recall70, recall80, recall90, recall100,  ndgg5, ndgg10, ndgg20, ndgg30, ndgg40, ndgg50, ndgg60, ndgg70, ndgg80, ndgg90, ndgg100 = eval_metric(all_top)
+            test_metrics = eval_metric(all_top)
+            recall5, recall10, recall20, recall30, recall40, recall50, recall60, recall70, recall80, recall90, recall100,  ndgg5, ndgg10, ndgg20, ndgg30, ndgg40, ndgg50, ndgg60, ndgg70, ndgg80, ndgg90, ndgg100 = test_metrics
+
+            # Validation-based epoch selection (only with --val). The epoch with the best
+            # validation NDCG@10 is the "selected" epoch; its test metrics are the ones to report.
+            # Test metrics never influence this choice.
+            if opt.val and val_ndcg10 > best_val_ndcg10:
+                best_val_ndcg10 = val_ndcg10
+                best_val_epoch = epoch
+                test_at_best_val = list(test_metrics)
+                if opt.model_record:
+                    os.makedirs('save_models', exist_ok=True)
+                    torch.save(model.state_dict(), 'save_models/' + model_file + '_bestval.pkl')
+
             if recall5 > best_result[0]:
                 best_result[0] = recall5
                 best_epoch[0] = epoch
                 stop = False
             if recall10 > best_result[1]:
                 if opt.model_record:
+                    os.makedirs('save_models', exist_ok=True)
                     torch.save(model.state_dict(), 'save_models/'+ model_file + '.pkl')
                 best_result[1] = recall10
                 best_epoch[1] = epoch
@@ -380,9 +420,19 @@ def main():
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "best_result": best_result,
-                "best_epoch": best_epoch
+                "best_epoch": best_epoch,
+                "best_val_ndcg10": best_val_ndcg10,
+                "best_val_epoch": best_val_epoch,
+                "test_at_best_val": test_at_best_val
                 }, checkpoint_path)
 
+    # Final, validation-selected report. This is the number to use in tables:
+    # epoch chosen on validation NDCG@10, test metrics read at that epoch only.
+    if opt.val and test_at_best_val is not None:
+        ks = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        print('VAL_SELECTED epoch=%d (1-based %d) Val_NDCG@10=%.4f' % (best_val_epoch, best_val_epoch + 1, best_val_ndcg10))
+        print('VAL_SELECTED_TEST ' + ' '.join(['Recall@%d=%.4f' % (k, v) for k, v in zip(ks, test_at_best_val[:11])]) + ' ' +
+              ' '.join(['NDCG@%d=%.4f' % (k, v) for k, v in zip(ks, test_at_best_val[11:])]))
     print('End training: ', datetime.datetime.now())
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import dgl
+import dgl.function as fn
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -11,7 +12,8 @@ import math
 class HSAL(nn.Module):
     def __init__(self, user_num, item_num, input_dim, item_max_length, user_max_length, feat_drop=0.2, attn_drop=0.2,
                  user_long='orgat', user_short='att', item_long='ogat', item_short='att', user_update='rnn',
-                 item_update='rnn', last_item=True, layer_num=3, time=True, data_name='MovieLens_all'):
+                 item_update='rnn', last_item=True, layer_num=3, time=True, data_name='MovieLens_all',
+                 use_rel=False, series_mode='forward', series_typed=False):
         super(HSAL, self).__init__()
         self.user_num = user_num
         self.item_num = item_num
@@ -43,7 +45,8 @@ class HSAL(nn.Module):
             self.unified_map = nn.Linear(self.layer_num * self.hidden_size, self.hidden_size, bias=False).to(self.device) 
         self.layers = nn.ModuleList([HSALLayers(self.hidden_size, self.hidden_size, self.user_max_length, self.item_max_length, feat_drop, attn_drop,
                                                 self.user_long, self.user_short, self.item_long, self.item_short,
-                                                self.user_update, self.item_update,self.item_embedding, data_name=data_name) for _ in range(self.layer_num)])
+                                                self.user_update, self.item_update,self.item_embedding, data_name=data_name,
+                                                use_rel=use_rel, series_mode=series_mode, series_typed=series_typed) for _ in range(self.layer_num)])
         self.reset_parameters()
 
     def forward(self, g, user_index=None, last_item_index=None, pos_tar=None, neg_tar=None, is_training=False):
@@ -104,8 +107,12 @@ class HSAL(nn.Module):
 
 class HSALLayers(nn.Module):
     def __init__(self, in_feats, out_feats, user_max_length, item_max_length, feat_drop=0.2, attn_drop=0.2, user_long='orgat', user_short='att',
-                 item_long='orgat', item_short='att', user_update='residual', item_update='residual', item_embedding=None, K=4, data_name='MovieLens_all'):
+                 item_long='orgat', item_short='att', user_update='residual', item_update='residual', item_embedding=None, K=4, data_name='MovieLens_all',
+                 use_rel=False, series_mode='forward', series_typed=False):
         super(HSALLayers, self).__init__()
+        self.use_rel = use_rel
+        self.series_mode = series_mode      # 'forward' (original) or 'bidir' (later + earlier + same position)
+        self.series_typed = series_typed
         
         # --- OPTIMIZATION START ---
         # 1. Load Data
@@ -192,6 +199,15 @@ class HSALLayers(nn.Module):
             self.u_time_encoding = nn.Embedding(self.item_max_length, self.hidden_size)
             self.u_time_encoding_k = nn.Embedding(self.item_max_length, self.hidden_size)
 
+        # Extra parameters exist only when the corresponding option is on, so the original model is unchanged.
+        if self.use_rel:
+            # typed 'relates_to' edges: 0 = src is a prequel of dst, 1 = src is a sequel of dst
+            self.rel_type_embedding = nn.Embedding(2, self.hidden_size)
+            self.rel_weight = nn.Linear(self.hidden_size, self.hidden_size, bias=False)
+        if self.series_typed:
+            # direction of a series neighbour relative to the item: 0 later, 1 earlier, 2 same position
+            self.series_dir_embedding = nn.Embedding(3, self.hidden_size)
+
 
     def user_update_function(self, user_now, user_old):
         if self.user_update_m == 'residual':
@@ -258,8 +274,11 @@ class HSALLayers(nn.Module):
        original_ids =  g.nodes['item'].data[dgl.NID]
        local_item_ids = g.nodes('item')
  
+       h_item_in = g.nodes['item'].data['item_h']     # item features before this layer's update (message source for relates_to)
        g.multi_update_all({'by': (self.user_message_func, self.user_reduce_func),
                            'pby': (self.item_message_func, self.item_reduce_func)}, 'sum')
+       if self.use_rel and 'relates_to' in g.etypes:
+           self.relation_update(g, h_item_in)
       
        node_ids = g.nodes['item'].data[dgl.NID]
        node_idx = (node_ids == 5).nonzero(as_tuple=True)[0]
@@ -267,6 +286,16 @@ class HSALLayers(nn.Module):
        item_embedding = g.nodes['item'].data['item_h'][node_idx]
        return g
 
+
+    def relation_update(self, g, h_item_in):
+        # Typed relation edges: every item aggregates the mean of (neighbour feature + relation type embedding)
+        # over its incoming 'relates_to' edges and adds it, through a linear map, to its own update.
+        # Built-in message/reduce functions are used on purpose: items without a relation edge get a zero
+        # aggregate, so nothing changes for them.
+        g.nodes['item'].data['h_rel_in'] = h_item_in
+        g.edges['relates_to'].data['rel_h'] = self.rel_type_embedding(g.edges['relates_to'].data['rtype'])
+        g.update_all(fn.u_add_e('h_rel_in', 'rel_h', 'm_rel'), fn.mean('m_rel', 'h_rel'), etype='relates_to')
+        g.nodes['item'].data['item_h'] = g.nodes['item'].data['item_h'] + self.rel_weight(g.nodes['item'].data['h_rel'])
 
     def item_message_func(self, edges):     
         dic = {}
@@ -297,11 +326,25 @@ class HSALLayers(nn.Module):
             for item_info in item_info_batch
         ]                           
         
-        valid_items = [
-            subsequent_items[subsequent_items['position_in_series'] > item_info['position_in_series']]
-            if subsequent_items is not None and item_info is not None else None
-            for subsequent_items, item_info in zip(subsequent_items_batch, item_info_batch)
-        ]
+        # series neighbours of each item. 'forward' is the original rule (later items only).
+        # 'bidir' also keeps earlier items and other items at the same position (everything else in the series).
+        valid_items = []
+        valid_dirs = []   # per neighbour: 0 later, 1 earlier, 2 same position (used when series_typed)
+        for subsequent_items, item_info in zip(subsequent_items_batch, item_info_batch):
+            if subsequent_items is None or item_info is None:
+                valid_items.append(None)
+                valid_dirs.append(None)
+                continue
+            own_pos = item_info['position_in_series']
+            if self.series_mode == 'bidir':
+                others = subsequent_items[subsequent_items['item_id'] != item_info['item_id']]
+                p = others['position_in_series'].values
+                valid_items.append(others)
+                valid_dirs.append(np.where(p > own_pos, 0, np.where(p < own_pos, 1, 2)))
+            else:
+                later = subsequent_items[subsequent_items['position_in_series'] > own_pos]
+                valid_items.append(later)
+                valid_dirs.append(np.zeros(len(later), dtype=np.int64))
         
         for i, valid_subsequent_items in enumerate(valid_items):
             if valid_subsequent_items is None or valid_subsequent_items.empty:
@@ -330,6 +373,9 @@ class HSALLayers(nn.Module):
 
             valid_embeddings = torch.stack(valid_embeddings)           
             adjusted_embeddings = valid_embeddings * subsequent_pos_embeddings
+            if self.series_typed:
+                dir_idx = torch.as_tensor(valid_dirs[i], dtype=torch.long, device=self.device)
+                adjusted_embeddings = adjusted_embeddings + self.series_dir_embedding(dir_idx)
 
             aggregated_embeddings = adjusted_embeddings.mean(dim=0) 
             s.append(aggregated_embeddings)

@@ -1,0 +1,1 @@
+{"edges": "/home/claude/nirwade/hsal-gnn-research/relation_edges/Goodreads_young_adult_HSAL_100k_relation_edges_all.csv", "splits": ["train", "val"], "chosen_budget": "uncapped"}
