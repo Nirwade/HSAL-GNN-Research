@@ -1,0 +1,35 @@
+#!/bin/bash
+#SBATCH --cluster=faculty
+#SBATCH --account=haimonti
+#SBATCH --partition=scavenger
+#SBATCH --qos=scavenger
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --gres=gpu:1
+#SBATCH --mem=200G
+#SBATCH --time=48:00:00
+#SBATCH --requeue
+#SBATCH --job-name=FantasyBase
+#SBATCH --output=logs/%x_%j.out
+#SBATCH --error=logs/%x_%j.err
+#SBATCH --mail-user=snirwade@buffalo.edu
+#SBATCH --mail-type=ALL
+
+# Chunking experiment, baseline run: ORIGINAL HSAL pipeline on the single Fantasy CSV (generate_neg.py -> sinusoidal.py -> new_data1.py -> new_main_BPR.py).
+# The steps are in fantasy_baseline_steps.sh. Scavenger jobs can be stopped: --requeue restarts the job,
+# a done-marker skips finished preprocessing, and --resume continues training from the last saved epoch.
+
+WORKDIR=/vscratch/grp-haimonti/snirwade/HSAL-Chunking
+echo "Job started : $(date)   host: $(hostname)"
+nvidia-smi
+export APPTAINER_CACHEDIR=/vscratch/grp-haimonti/$USER/apptainer_cache
+export APPTAINER_TMPDIR=/vscratch/grp-haimonti/$USER/apptainer_tmp
+mkdir -p $APPTAINER_CACHEDIR $APPTAINER_TMPDIR
+cd $WORKDIR
+# -B: venv links to ../HSAL-GNN-Research/venv, which links to /projects/academic/haimonti/snirwade/venv;
+# the container must see both folders
+apptainer exec --nv --writable-tmpfs -B /vscratch/grp-haimonti/snirwade,/projects/academic/haimonti pytorch.sif bash fantasy_baseline_steps.sh
+status=$?
+echo "Job finished : $(date)   exit code: $status"
+exit $status
