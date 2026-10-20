@@ -1,0 +1,18 @@
+HSAL Fantasy: original vs 8-chunk graph construction (10 epochs, seed 0, scavenger)
+Tue Oct 20 08:15:22 AM EDT 2026
+JobID               JobName      State    Elapsed        NodeList 
+------------ -------------- ---------- ---------- --------------- 
+25107242      FantasyChunk8  COMPLETED   11:21:27      cpn-f08-18 
+25107241        FantasyBase  COMPLETED   01:26:28      cpn-f08-25 
+
+Epoch | Baseline Recall@10 NDCG@10 | Chunked Recall@10 NDCG@10
+1 | 0.4085 0.2150|0.4092 0.2153
+2 | 0.4414 0.2342|0.4409 0.2338
+3 | 0.4753 0.2564|0.4757 0.2564
+4 | 0.4931 0.2730|0.4931 0.2727
+5 | 0.5091 0.2831|0.5094 0.2832
+6 | 0.5205 0.2892|0.5213 0.2896
+7 | 0.5205 0.2892|0.5213 0.2896
+8 | 0.5321 0.2949|0.5320 0.2953
+9 | 0.5390 0.3028|0.5388 0.3023
+10 | 0.5391 0.3028|0.5422 0.3044

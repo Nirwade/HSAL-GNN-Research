@@ -74,8 +74,9 @@ run from `/vscratch/grp-haimonti/snirwade/HSAL-Chunking` (the container needs
 | Job | 25107241 | 25107242 |
 | Samples train / val / test | 254,807 / 38,998 / 57,463 | same |
 | Preprocessing | ~7 h | 8 min |
-| Training | ~1 h per epoch (pre-empted once, resumed) | ~1 h per epoch |
+| Training | ~1 h per epoch; pre-empted by scavenger, requeued and resumed (last attempt on cpn-f08-25, H100) | ~1 h per epoch, no interruption (cpn-f08-18, L40S) |
 | Recall@10 / NDCG@10 after 10 epochs (best so far) | 0.5391 / 0.3028 | 0.5422 / 0.3044 |
 
-Per-epoch numbers: `results_chunking_fantasy/comparison.csv`. Across epochs 1-9 the two runs differ by at
+Per-epoch numbers: `results_chunking_fantasy/comparison.csv`; chart: `results_chunking_fantasy/comparison_chart.png`;
+raw CCR output (job states and table): `results_chunking_fantasy/comparison_ccr_output.txt`. Across epochs 1-9 the two runs differ by at
 most 0.0008; the samples are identical, so remaining differences come from training randomness.
