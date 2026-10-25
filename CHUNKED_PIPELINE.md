@@ -80,3 +80,21 @@ run from `/vscratch/grp-haimonti/snirwade/HSAL-Chunking` (the container needs
 Per-epoch numbers: `results_chunking_fantasy/comparison.csv`; chart: `results_chunking_fantasy/comparison_chart.png`;
 raw CCR output (job states and table): `results_chunking_fantasy/comparison_ccr_output.txt`. Across epochs 1-9 the two runs differ by at
 most 0.0008; the samples are identical, so remaining differences come from training randomness.
+
+## HSAL+LRD with chunked graph construction
+
+HSAL+LRD reuses the chunked graph, samples, negatives and series table above; only training and the
+LLM text embeddings are new. Original `HSAL_for_lrd.py` and `new_main_lrd.py` are unchanged.
+
+| New file | Copy of | What changed |
+|---|---|---|
+| `HSAL_for_lrd_fixed.py` | `HSAL_for_lrd.py` | Bug fix: the LRD loss looked up the last book with its position inside the sample's subgraph (`last_alis`) instead of its book id; it now converts the position to the id first (wrong for 256 of 256 sampled examples before, right for 256 of 256 after) |
+| `new_main_lrd_fixed.py` | `new_main_lrd.py` | Uses the fixed model; `--seed` like `new_main_BPR.py`; file names tagged `_LRD_seed<k>` so `--resume` can never load a core-HSAL checkpoint |
+| `new_main_lrd_chunked.py` | `new_main_lrd_fixed.py` | User/book counts from the global ID map; `_chunked` name check |
+| `generate_llm_embeddings_v2.py` | `generate_llm_embeddings.py` | Same text (`Title: ... Description: ...`), model (all-MiniLM-L6-v2) and row order; command-line options, `.json.gz` or stdin metadata, device choice, refuses to save if no book matches |
+| `generate_llm_embeddings_chunked.py` | `generate_llm_embeddings_v2.py` | Row order from the global ID map (`books.csv`) instead of the CSV |
+| `run_fantasy_lrd_{baseline,chunked}.sbatch`, `fantasy_lrd_*_steps.sh` | `run_fantasy_*.sbatch` | CCR jobs: same settings as the core runs (batch 256, seed 0, 10 epochs, scavenger, `--resume`) |
+
+Fantasy embeddings (`Data/goodreads_books_fantasy_paranormal.json.gz` from the UCSD Goodreads site):
+text found for 29,428 / 29,428 books; the baseline and chunked files are bit-identical (same book on
+every row, max difference 0.0), shape 29,428 x 384.
