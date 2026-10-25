@@ -98,3 +98,19 @@ LLM text embeddings are new. Original `HSAL_for_lrd.py` and `new_main_lrd.py` ar
 Fantasy embeddings (`Data/goodreads_books_fantasy_paranormal.json.gz` from the UCSD Goodreads site):
 text found for 29,428 / 29,428 books; the baseline and chunked files are bit-identical (same book on
 every row, max difference 0.0), shape 29,428 x 384.
+
+### HSAL+LRD Fantasy results (CCR scavenger, batch 256, seed 0, 10 epochs)
+
+| | Baseline (original) | Chunked (8 chunks) |
+|---|---|---|
+| Job / GPU | 25153950 / A100 80GB (cpn-c08-07) | 25153951 / L40S (cpn-f08-18) |
+| Run time | 7 h 29 min | 4 h 24 min |
+| Recall@10 / NDCG@10 after 10 epochs (best so far) | 0.5437 / 0.3081 | 0.5466 / 0.3110 |
+
+Per-epoch numbers: `results_chunking_fantasy_lrd/comparison.csv`; chart: `results_chunking_fantasy_lrd/comparison_chart.png`;
+raw CCR output: `results_chunking_fantasy_lrd/comparison_ccr_output.txt`. Epochs 2-5 differ by up to about 1 point
+(baseline ahead), then the runs meet and finish within 0.003. Inputs (samples, negatives, embeddings) are identical, so the
+gap is training randomness; the two runs also used different GPUs.
+
+All four Fantasy runs after 10 epochs: HSAL 0.5391 / 0.3028, HSAL chunked 0.5422 / 0.3044, HSAL+LRD 0.5437 / 0.3081,
+HSAL+LRD chunked 0.5466 / 0.3110 (Recall@10 / NDCG@10). One seed each.
