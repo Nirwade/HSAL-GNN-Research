@@ -114,3 +114,20 @@ gap is training randomness; the two runs also used different GPUs.
 
 All four Fantasy runs after 10 epochs: HSAL 0.5391 / 0.3028, HSAL chunked 0.5422 / 0.3044, HSAL+LRD 0.5437 / 0.3081,
 HSAL+LRD chunked 0.5466 / 0.3110 (Recall@10 / NDCG@10). One seed each.
+
+## Generic chunked jobs for other Goodreads datasets
+
+`run_hsal_chunked.sbatch` (core HSAL, steps in `hsal_chunked_steps.sh`) and `run_lrd_chunked.sbatch` (HSAL+LRD,
+steps in `lrd_chunked_steps.sh`) take the dataset at submit time; settings come from `chunked_common.sh` and match
+the Fantasy runs (scavenger, batch 256, seed 0, 10 epochs, `--requeue`, `--resume`). The HSAL+LRD job waits for the
+HSAL job's chunked preprocessing of the same dataset, then checks that the chunked book order matches the embedding
+rows before training.
+
+```bash
+sbatch --export=ALL,DATASET=Goodreads_Romance_HSAL_Final --job-name=HSALchunk_Romance --mem=128G run_hsal_chunked.sbatch
+sbatch --export=ALL,DATASET=Goodreads_Romance_HSAL_Final --job-name=LRDchunk_Romance  --mem=128G run_lrd_chunked.sbatch
+```
+
+Embeddings: `generate_llm_embeddings_v2.py --data <dataset>` with `goodreads_books_<genre>.json.gz`, saved as
+`Data/<dataset>_chunked_llm_embeddings.pt`. Submitted for Young Adult (272,339 rows, 8,518 books), Romance
+(416,985 rows, 37,811 books) and Mystery (399,905 rows, 15,292 books); text found for every book.
