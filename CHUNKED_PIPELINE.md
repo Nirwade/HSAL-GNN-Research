@@ -131,3 +131,7 @@ sbatch --export=ALL,DATASET=Goodreads_Romance_HSAL_Final --job-name=LRDchunk_Rom
 Embeddings: `generate_llm_embeddings_v2.py --data <dataset>` with `goodreads_books_<genre>.json.gz`, saved as
 `Data/<dataset>_chunked_llm_embeddings.pt`. Submitted for Young Adult (272,339 rows, 8,518 books), Romance
 (416,985 rows, 37,811 books) and Mystery (399,905 rows, 15,292 books); text found for every book.
+
+## All Goodreads results
+
+See `results_goodreads_all/README.md` for HSAL and HSAL+LRD (chunked) on Fantasy, Young Adult, Romance and Mystery.
