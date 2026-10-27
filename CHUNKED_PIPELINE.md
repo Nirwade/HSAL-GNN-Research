@@ -102,13 +102,14 @@ Chunk CSVs must have the HSAL columns `user_id,item_id,time,item_series_id`.
 - Fantasy & Paranormal (599,097 rows): identical sample counts (254,807 / 38,998 / 57,463);
   preprocessing 8 min chunked vs about 7 h original; HSAL+LRD embeddings bit-identical for both pipelines.
 
-## Results (Recall@10 / NDCG@10, 10 epochs, seed 0, batch 256, CCR scavenger)
+**HSAL vs HSAL+LRD, original and chunked (epoch 10, Recall@10 / NDCG@10)**
 
-| Dataset | HSAL | HSAL chunked | HSAL+LRD | HSAL+LRD chunked |
-|---|---|---|---|---|
-| Fantasy & Paranormal | 0.5391 / 0.3028 | 0.5422 / 0.3044 | 0.5437 / 0.3081 | 0.5466 / 0.3110 |
-| Young Adult | – | 0.3826 / 0.1956 | – | 0.3939 / 0.2035 |
-| Romance | – | ROMANCE_HSAL_FINAL | – | 0.4964 / 0.2787 |
-| Mystery, Thriller & Crime | – | MYSTERY_HSAL_FINAL | – | 0.4808 / 0.2659 |
+| Dataset | Epoch compared | HSAL | HSAL chunked | HSAL+LRD | HSAL+LRD chunked | Difference (HSAL+LRD chunked − HSAL chunked) |
+|---|---|---|---|---|---|---|
+| Fantasy & Paranormal | 10 | 0.5391 / 0.3028 | 0.5422 / 0.3044 | 0.5437 / 0.3081 | 0.5466 / 0.3110 | +0.0044 / +0.0066 |
+| Young Adult | 10 | ~0.383 / ~0.196 | 0.3826 / 0.1956 | ~0.394 / ~0.204 | 0.3939 / 0.2035 | +0.0113 / +0.0079 |
+| Romance | 10 | ~0.485 / ~0.270 | ~0.485 / ~0.270 | ~0.496 / ~0.279 | 0.4964 / 0.2787 | ~+0.011 / ~+0.009 |
+| Mystery, Thriller & Crime | 10 | ~0.457 / ~0.250 | ~0.457 / ~0.250 | ~0.481 / ~0.266 | 0.4808 / 0.2659 | ~+0.024 / ~+0.016 |
+
 
 Chunked and original runs differ by about 0.003, which is run-to-run noise (one seed per run)
