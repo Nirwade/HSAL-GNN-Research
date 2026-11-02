@@ -1,0 +1,21 @@
+item_id,title,author,has_alternative_version,match_title,match_author,match_description,match_medium,series_info,confidence,reason,parse_status,call_seconds,title_check
+50,"Hatchet (Brian's Saga, #1)",,True,Hatchet: Survival,Gary Paulsen,"This version is a graphic novel adaptation of the original story, with some changes to the narrative and illustrations.",book,"Brian's Saga, #1",high,,ok,7.73,verified
+2811,"A House Like a Lotus (O'Keefe Family, #3)",,False,,,,,"O'Keefe Family, #3",low,,ok,5.85,
+3304,"City of the Beasts (Eagle and Jaguar, #1)",,False,,,,,"Eagle and Jaguar, #1",low,,ok,4.63,
+3467,"The People of Sparks (Book of Ember, #2)",,True,"The City of Ember (Book of Ember, #1)",Jeanne DuPrau,"This is an alternate version because it has a different narrative premise. The first book sets up the story in the underground city of Ember, while this one takes place after the characters have left Ember and are trying to survive in Sparks.",book,"Book of Ember, #2",high,,ok,7.82,verified
+4325,Dreamland,,False,,,,,,low,,ok,5.25,
+4580,"Enchantress from the Stars (Elana, #1)",,False,,,,,"Elana, #1",low,,ok,4.46,
+4717,"This Side of Paradise (Paradise, #1)",,False,,,,,"Paradise, #1",low,,ok,4.7,
+5452,"Girls in Pants: The Third Summer of the Sisterhood (Sisterhood, #3)",,False,,,,,"Sisterhood series, #3",low,,ok,4.59,
+5453,"Forever in Blue: The Fourth Summer of the Sisterhood (Sisterhood, #4)",,False,,,,,"Sisterhood series, #4",low,,ok,4.55,
+5454,"The Second Summer of the Sisterhood (Sisterhood, #2)",,False,,,,,"Sisterhood series, #2",low,,ok,4.57,
+8137,"The Road to Yesterday (Anne of Green Gables, #9)",,False,,,,,"Anne of Green Gables series, #9",low,"The title 'The Road to Yesterday' suggests a narrative that diverges from the original story, but I couldn't find any information on a specific book or adaptation that presents an alternate version of Anne of Green Gables. The only possible candidate is a movie adaptation titled 'Anne of Windy Poplars', which is part of the same series and doesn't present a materially different narrative.",ok,8.51,
+8951,The Lake of Souls,,False,,,,,,low,,ok,4.21,
+8953,"Freak the Mighty (Freak The Mighty, #1)",,False,,,,,,low,"The title suggests it might be a series, but there's no clear indication of a narrative branch or adaptation.",ok,5.29,
+8960,"Vampire Mountain (Cirque Du Freak, #4)",,False,,,,,"Cirque Du Freak, #4",high,,ok,4.69,
+10050,Youth in Revolt: The Journals of Nick Twisp,,True,Youth in Revolt (film),"Meyerowitz, Jared","The film adaptation of 'Youth in Revolt' condenses and rearranges certain events from the original novel, presenting a different narrative.",movie,,high,"The book 'Youth in Revolt' by C.D. Payne is a novel that has been adapted into a film with the same title. The film adaptation presents a materially different narrative version, as it condenses and rearranges certain events from the original novel.",ok,9.0,verified
+10570,"King Dork (King Dork, #1)",,False,,,,,King Dork (#1),low,,ok,5.68,
+11831,"Dicey's Song (Tillerman Cycle, #2)",,False,,,,,"Tillerman Cycle, #2",low,,ok,4.65,
+12125,"Homecoming (Tillerman Cycle, #1)",,False,,,,,"Tillerman Cycle, #1",low,,ok,4.64,
+12771,"A Kiss Before Dying (Sweet Valley High, #122)",,False,,,,,"Sweet Valley High, #122",low,,ok,4.58,
+12930,"Messenger (The Giver, #3)",,False,,,,,"The Giver series, #3",low,,ok,4.61,
