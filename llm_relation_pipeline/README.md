@@ -65,7 +65,7 @@ ollama pull mistral
 
 ## Raw data (only needed to rebuild `inputs/` and the embeddings)
 
-You do not need these to run the pipeline. The 100k interaction file, the metadata and the embeddings are all committed. The raw files come from the UCSD Goodreads dataset (Wan and McAuley, RecSys 2018; Wan et al., ACL 2019), which is for academic use. Download page: https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/
+You do not need these to run the pipeline. The 100k interaction file, the metadata and the embeddings are all committed. The raw files come from the UCSD Goodreads dataset (Wan and McAuley, RecSys 2018; Wan et al., ACL 2019),  Download page: https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/
 
 | File | Used for |
 |---|---|
