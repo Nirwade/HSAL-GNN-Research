@@ -48,6 +48,6 @@ for i in $(seq 1 30); do
   sleep 2
 done
 
-python3 extract_prequel.py --version A --model llama3.1:8b --workers 4
+python3 src/extract_prequel.py --version A --model llama3.1:8b --workers 4
 
 echo "Job finished at $(date)"

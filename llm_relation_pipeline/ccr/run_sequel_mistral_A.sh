@@ -38,4 +38,4 @@ for i in $(seq 1 30); do
     sleep 2
 done
 
-python3 extract_sequel.py --version A --model mistral --workers 4
+python3 src/extract_sequel.py --version A --model mistral --workers 4
