@@ -13,7 +13,7 @@ For each of the 8,108 books the pipeline does four things:
 
 Two variants are compared. **Version A** prompts with the title only. **Version B** prompts with title and author, and its embeddings include the author name. Version B did better on Llama in the full-corpus run, so it is the one to start from.
 
- The reports (`reports/HSAL_LLM_Relation_Enhancement_Report_v4.pdf` and `.docx`) have the full results and the caveats; read sections 5, 13 and 14 before relying on any number.
+ The reports (`reports/HSAL_LLM_Relation_Enhancement_Report_v4.pdf` and `.docx`) have the full results and the caveats.
 
 ## Folder layout
 
