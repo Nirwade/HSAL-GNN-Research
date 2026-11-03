@@ -3,7 +3,7 @@
 #SBATCH --account=haimonti
 #SBATCH --partition=scavenger
 #SBATCH --qos=scavenger
-#SBATCH --job-name=sequel_mistral_A
+#SBATCH --job-name=sequel_llama_A
 #SBATCH --output=slurm_logs/%x_%j.out
 #SBATCH --error=slurm_logs/%x_%j.err
 #SBATCH --nodes=1
@@ -13,9 +13,9 @@
 #SBATCH --gres=gpu:1
 #SBATCH --time=10:00:00
 
-REPO_DIR="/vscratch/grp-haimonti/snirwade/llm_relation_pipeline_ccr/llm_relation_pipeline"
-OLLAMA_SIF="/vscratch/grp-haimonti/snirwade/HSAL-GNN-Research/ollama.sif"
-PORT=11446
+REPO_DIR="${REPO_DIR:-/vscratch/grp-haimonti/snirwade/llm_relation_pipeline_ccr/llm_relation_pipeline}"
+OLLAMA_SIF="${OLLAMA_SIF:-/vscratch/grp-haimonti/snirwade/HSAL-GNN-Research/ollama.sif}"
+PORT=11444
 
 cd "$REPO_DIR"
 export APPTAINER_CACHEDIR="/vscratch/grp-haimonti/$USER/apptainer_cache"
@@ -38,4 +38,4 @@ for i in $(seq 1 30); do
     sleep 2
 done
 
-python3 extract_sequel.py --version A --model mistral --workers 4
+python3 extract_sequel.py --version A --model llama3.1:8b --workers 4
