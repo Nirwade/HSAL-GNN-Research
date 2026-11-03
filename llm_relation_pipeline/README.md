@@ -2,7 +2,7 @@
 
 
 
-HSAL-GNN is a graph recommender that uses series information between books. This folder tests one idea: can an LLM, using only its own knowledge of a book, tell us whether the book has a **prequel** or a **sequel** in its series, and can the book it names be found among the 8,108 books in our training data? A found book is a candidate new edge for the HSAL graph.
+HSAL-GNN is a graph recommender that uses series information between books, this case study helps if an LLM, using only its own knowledge of a book, tell us whether the book has a **prequel** or a **sequel** in its series, and can the book it names be found among the 8,108 books in our training data? A found book is a candidate new edge for the HSAL graph.
 
 For each of the 8,108 books the pipeline does four things:
 
@@ -13,7 +13,7 @@ For each of the 8,108 books the pipeline does four things:
 
 Two variants are compared. **Version A** prompts with the title only. **Version B** prompts with title and author, and its embeddings include the author name. Version B did better on Llama in the full-corpus run, so it is the one to start from.
 
-Graph integration and HSAL retraining are not part of this folder. Matching quality (did it find the right book) is not scored against ground truth, only the yes/no answer is. The reports (`HSAL_LLM_Relation_Enhancement_Report_v4.pdf` and `.docx`) have the full results and the caveats; read sections 5, 13 and 14 before relying on any number.
+ The reports (`HSAL_LLM_Relation_Enhancement_Report_v4.pdf` and `.docx`) have the full results and the caveats; read sections 5, 13 and 14 before relying on any number.
 
 Alternative Version was also explored. Those scripts and files are left in the folder but are out of scope here and are not documented.
 
@@ -74,15 +74,14 @@ You do not need these to run the pipeline. The 100k interaction file, the metada
 | `byGenre/goodreads_interactions_young_adult.json.gz` | Only to rebuild the 100k interaction file. |
 | `goodreads_books.json.gz` | Only to rebuild the franchise map used for series positions. |
 
-I could not open these URLs from the environment where this README was written, so check the exact filenames on the page.
+
 
 ## How the committed inputs were made
 
-`upstream/build_hsal_dataset_colab_cells.py` has the Colab cells that produced `inputs/Goodreads_young_adult_HSAL_100k.csv`: keep English US canonical editions, collapse editions of one franchise into one series, sample interactions with per-series budgets, assign series positions, subsample to 100k rows. It is there for provenance. It was not re-run and the sampling is random, so use the committed file instead of rebuilding it.
+`upstream/build_hsal_dataset_colab_cells.py` has the Colab cells that produced `inputs/Goodreads_young_adult_HSAL_100k.csv`
 
 Both embedding versions use `all-MiniLM-L6-v2` (384 dimensions). The embedded text is `title + description (first 500 chars) + genre` for Version A and `title + description + genre + author` for Version B, where genre is the first Goodreads popular shelf that is not on a skip list of generic shelves.
 
-I rebuilt the Version B `.text` and `.meta.csv` from the raw UCSD files and the 100k file, and both were byte-identical to the committed files. The embedding step itself (`.feat.npy`) was not re-run.
 
 ## Execution order
 
@@ -114,7 +113,7 @@ I rebuilt the Version B `.text` and `.meta.csv` from the raw UCSD files and the 
 
 ## Reproducing the results
 
-| Level | What you run | Result |
+| Level | What to run | Result |
 |---|---|---|
 | 1. Ground truth and scoring | Step 1 and step 4 on the committed extraction files. No LLM, no GPU, seconds. | Exact. `git diff` should show no change in `ground_truth_full_corpus.csv` or `full_corpus_scoring_results.csv`, and the 400-book scorers print the TP/FP/TN/FN counts in the report. Verified. |
 | 2. Matching | Step 3 on the committed extraction files. | Should match if the same embedding model is used. Not re-run. |
@@ -123,16 +122,10 @@ I rebuilt the Version B `.text` and `.meta.csv` from the raw UCSD files and the 
 
 ## CCR (UB cluster)
 
-`ccr/run_*.sh` start Ollama in an Apptainer container on a scavenger GPU node and run the extraction for one relation, version and model. They are specific to UB CCR. Override the defaults with environment variables, create the log folder, and submit from this folder:
+`ccr/run_*.sh` start Ollama in an Apptainer container on a scavenger GPU node and run the extraction for one relation, version and model, they are specific to UB CCR. Override the defaults with environment variables, create the log folder, and submit from this folder:
 
 ```
 mkdir -p slurm_logs
 REPO_DIR=$PWD OLLAMA_SIF=/path/to/ollama.sif sbatch ccr/run_sequel_llama_B.sh
 ```
 
-## Things to keep in mind when reading the numbers
-
-- Ground truth only knows about the 8,108 books in this corpus. A real sequel that is not in the corpus counts as a false positive.
-- The 400-book sample uses a stricter definition of a sequel negative (the last numbered book of a series with at least two numbered books). The full-corpus ground truth counts every book with an empty `r_sequel` as negative, including the 443 standalone books. The two sets of sequel numbers are not scored against the same definition.
-- The `matches_*` files record whether a match was found and how, but the matched book is not checked against ground truth.
-- All 8,108 books are English US editions by `language_code` (`eng` or `en-US`, country `US`). A language classifier still found a few descriptions written in other languages (10 of the 8,108 at least), and that text is what gets embedded.
