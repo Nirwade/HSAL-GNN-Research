@@ -1,6 +1,6 @@
 # LLM relation extraction for HSAL-GNN (Goodreads Young Adult)
 
-## What this is
+
 
 HSAL-GNN is a graph recommender that uses series information between books. This folder tests one idea: can an LLM, using only its own knowledge of a book, tell us whether the book has a **prequel** or a **sequel** in its series, and can the book it names be found among the 8,108 books in our training data? A found book is a candidate new edge for the HSAL graph.
 
