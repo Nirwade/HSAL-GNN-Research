@@ -115,10 +115,10 @@ Both embedding versions use `all-MiniLM-L6-v2` (384 dimensions). The embedded te
 
 | Level | What to run | Result |
 |---|---|---|
-| 1. Ground truth and scoring | Step 1 and step 4 on the committed extraction files. No LLM, no GPU, seconds. | Exact. `git diff` should show no change in `ground_truth_full_corpus.csv` or `full_corpus_scoring_results.csv`, and the 400-book scorers print the TP/FP/TN/FN counts in the report. Verified. |
-| 2. Matching | Step 3 on the committed extraction files. | Should match if the same embedding model is used. Not re-run. |
-| 3. LLM extraction | Step 2. | Will not reproduce the numbers exactly. Temperature is 0.2 and the report found that the Mac and CCR runs gave the same answer on only 44.8% to 80.6% of the same books. |
-| 4. Rebuild the inputs | `upstream/` plus the raw files. | Provenance only. |
+| 1. Ground truth and scoring | Step 1 and step 4 on the committed extraction files. No LLM, no GPU, seconds. | . |
+| 2. Matching | Step 3 on the committed extraction files. | Should match if the same embedding model is used.  |
+| 3. LLM extraction | Step 2. | |
+| 4. Rebuild the inputs | `upstream/` plus the raw files. |  |
 
 ## CCR (UB cluster)
 
